@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#070b17">
+<meta name="description" content="La Espada Celestial: RPG Retro — una aventura de acción, magia y criaturas coleccionables.">
+<title>La Espada Celestial · RPG Retro</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<svg id="icon-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="i-sword" viewBox="0 0 24 24"><path d="M14.5 3.5 21 3l-.5 6.5-9 9-2.5-2.5z"/><path d="m9 15-2 2m-2 4 3-3m-4 1 2 2"/><path d="m13 6 5 5"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3c2.8 2 6 2.8 8 3v6c0 5-3.4 8-8 10-4.6-2-8-5-8-10V6c2-.2 5.2-1 8-3Z"/><path d="M12 7v10m-4-5h8"/></symbol>
+    <symbol id="i-wand" viewBox="0 0 24 24"><path d="m4 20 11-11 3 3L7 23z"/><path d="m17 3 .8 2.2L20 6l-2.2.8L17 9l-.8-2.2L14 6l2.2-.8zM6 4l.5 1.5L8 6l-1.5.5L6 8l-.5-1.5L4 6l1.5-.5z"/></symbol>
+    <symbol id="i-bow" viewBox="0 0 24 24"><path d="M6 3c8 1 12 5 15 15M6 3c1 8 5 12 15 15"/><path d="M6 3c0 8 4 12 15 15M6 3 3 6m15 12 3-3"/><path d="m7 7 10 10"/></symbol>
+    <symbol id="i-dagger" viewBox="0 0 24 24"><path d="m13 3 3 3-7 7-3-3z"/><path d="m6 10 8 8m-8-4 4 4m-8 0 4-4"/></symbol>
+    <symbol id="i-spear" viewBox="0 0 24 24"><path d="M12 2 15 8l-3 3-3-3z"/><path d="M12 11v11"/><path d="M9 17h6"/></symbol>
+    <symbol id="i-potion" viewBox="0 0 24 24"><path d="M9 3h6v4l3 5v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4v-5l3-5z"/><path d="M6.5 14h11M9 3h6"/><path d="M9 7h6"/></symbol>
+    <symbol id="i-ether" viewBox="0 0 24 24"><path d="M9 3h6v3l3 4v7a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4v-7l3-4z"/><path d="M12 10v7m-3-4h6"/></symbol>
+    <symbol id="i-herb" viewBox="0 0 24 24"><path d="M12 21V9"/><path d="M12 13c-5 0-7-3-7-8 5 0 7 3 7 8Zm0-4c5 0 7-3 7-7-5 0-7 3-7 7Z"/></symbol>
+    <symbol id="i-crystal" viewBox="0 0 24 24"><path d="m12 2 6 6-6 14L6 8z"/><path d="M6 8h12M12 2v20M9 8l3 14 3-14"/></symbol>
+    <symbol id="i-seal" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="m12 4 2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></symbol>
+    <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v10m3-8c-1-1.5-6-1-6 1s6 0 6 2-5 2.5-6 1"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20S3 14.5 3 8.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 9 2.5C21 14.5 12 20 12 20Z"/></symbol>
+    <symbol id="i-mana" viewBox="0 0 24 24"><path d="m12 2 3.5 7L22 12l-6.5 3L12 22l-3.5-7L2 12l6.5-3z"/></symbol>
+    <symbol id="i-stamina" viewBox="0 0 24 24"><path d="m13 2-8 12h6l-1 8 8-12h-6z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3 7 8 .8-6 5.5 1.8 8L12 19l-6.8 4.3L7 15.3 1 9.8 9 9z"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2z"/><path d="M9 3v16m6-14v16"/></symbol>
+    <symbol id="i-quest" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/><path d="M9 8h6m-6 4h6"/></symbol>
+    <symbol id="i-creature" viewBox="0 0 24 24"><path d="M7 10a5 5 0 0 1 10 0c0 3 2 5 2 7a3 3 0 0 1-4 3c-1-1-1-2-3-2s-2 1-3 2a3 3 0 0 1-4-3c0-2 2-4 2-7Z"/><circle cx="10" cy="10" r=".8" fill="currentColor"/><circle cx="14" cy="10" r=".8" fill="currentColor"/><path d="M10 14h4"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4h6a3 3 0 0 1 2 3v14a3 3 0 0 0-2-3H4zM20 4h-6a3 3 0 0 0-2 3v14a3 3 0 0 1 2-3h6z"/></symbol>
+    <symbol id="i-hammer" viewBox="0 0 24 24"><path d="m5 21 8-8"/><path d="M4 4h7l2 2 3-3 4 4-3 3 2 2v3h-3l-7-7z"/></symbol>
+    <symbol id="i-shop" viewBox="0 0 24 24"><path d="M4 9v12h16V9"/><path d="M3 9 5 3h14l2 6a3 3 0 0 1-5 1 3 3 0 0 1-6 0 3 3 0 0 1-6-1Z"/><path d="M9 21v-6h6v6"/></symbol>
+    <symbol id="i-stats" viewBox="0 0 24 24"><path d="M4 20V10m6 10V4m6 16v-7"/><path d="M2 20h20"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M4 3h13l3 3v15H4z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-fire" viewBox="0 0 24 24"><path d="M12 22c-5 0-7-3-7-7 0-5 5-8 7-13 1 4 7 6 7 12 0 5-3 8-7 8Z"/><path d="M12 22c-2 0-3-1.5-3-3 0-2 2-3 3-5 1 2 3 3 3 5 0 1.5-1 3-3 3Z"/></symbol>
+    <symbol id="i-water" viewBox="0 0 24 24"><path d="M12 2S5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13Z"/><path d="M8 16c1 2 2 3 4 3"/></symbol>
+    <symbol id="i-earth" viewBox="0 0 24 24"><path d="m12 2 8 6-3 12H7L4 8z"/><path d="m4 8 8 4 8-4M12 12v8"/></symbol>
+    <symbol id="i-wind" viewBox="0 0 24 24"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/></symbol>
+    <symbol id="i-lightning" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 9-12h-7z"/></symbol>
+    <symbol id="i-ice" viewBox="0 0 24 24"><path d="M12 2v20M3 7l18 10M21 7 3 17"/><path d="m9 4 3 3 3-3M9 20l3-3 3 3M4 9l4 1 1-4M20 15l-4-1-1 4M20 9l-4 1-1-4M4 15l4-1 1 4"/></symbol>
+    <symbol id="i-light" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/></symbol>
+    <symbol id="i-dark" viewBox="0 0 24 24"><path d="M20 14A9 9 0 0 1 8 3a9 9 0 1 0 12 11Z"/><path d="M17 5h.01M20 8h.01"/></symbol>
+    <symbol id="i-nature" viewBox="0 0 24 24"><path d="M12 21V9m0 5c-5 0-8-3-8-8 5 0 8 3 8 8Zm0-3c5 0 8-3 8-8-5 0-8 3-8 8Z"/></symbol>
+    <symbol id="i-celestial" viewBox="0 0 24 24"><path d="m12 2 2.3 7.7L22 12l-7.7 2.3L12 22l-2.3-7.7L2 12l7.7-2.3z"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="i-armor" viewBox="0 0 24 24"><path d="M8 3 4 6l1 8c0 3 3 6 7 7 4-1 7-4 7-7l1-8-4-3-3 2z"/><path d="M12 3v18"/></symbol>
+    <symbol id="i-ring" viewBox="0 0 24 24"><circle cx="12" cy="14" r="6"/><path d="m9 7 1-4h4l1 4"/><path d="m10 5 2-3 2 3"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l1 13H4z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="8" r="5"/><path d="m11.5 11.5 9 9m-3-3 2-2m-4 0 2-2"/></symbol>
+    <symbol id="i-paw" viewBox="0 0 24 24"><ellipse cx="12" cy="15" rx="5" ry="4"/><ellipse cx="6" cy="8" rx="2" ry="2.5"/><ellipse cx="10" cy="5" rx="2" ry="2.5"/><ellipse cx="14" cy="5" rx="2" ry="2.5"/><ellipse cx="18" cy="8" rx="2" ry="2.5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M19 5l-1.5 1.5m-11 11L5 19"/></symbol>
+  </defs>
+</svg>
+
+<div id="app">
+  <canvas id="game-canvas" aria-label="Mundo de juego"></canvas>
+  <div id="vignette"></div>
+  <div id="hud" class="hidden" aria-live="off">
+    <div class="hud-top">
+      <section class="player-card">
+        <div class="avatar-frame"><canvas id="avatar-canvas" width="96" height="96"></canvas><span id="hud-level" class="level-badge">1</span></div>
+        <div class="player-bars">
+          <div class="player-name-row"><strong id="hud-name">Astra</strong><span id="hud-class">Viajera</span></div>
+          <div class="bar hp"><i id="bar-hp"></i><span id="txt-hp">100 / 100</span></div>
+          <div class="bar mp"><i id="bar-mp"></i><span id="txt-mp">60 / 60</span></div>
+          <div class="bar sp"><i id="bar-sp"></i><span id="txt-sp">100 / 100</span></div>
+          <div class="bar xp"><i id="bar-xp"></i></div>
+        </div>
+      </section>
+      <div class="hud-center">
+        <div class="zone-plaque"><span id="hud-zone">Aldea Alba</span><small id="hud-clock">Crepúsculo</small></div>
+        <div id="boss-wrap" class="boss-wrap hidden">
+          <div class="boss-name"><span id="boss-name">Guardián</span><em id="boss-phase">Fase I</em></div>
+          <div class="boss-bar"><i id="boss-fill"></i></div>
+        </div>
+      </div>
+      <div class="hud-right">
+        <div class="minimap-frame"><canvas id="minimap" width="150" height="150"></canvas><div class="minimap-ring"></div><span id="mini-zone">ALDEA</span></div>
+        <div class="coin-pill"><svg class="ico"><use href="#i-coin"></use></svg><span id="hud-gold">0</span></div>
+      </div>
+    </div>
+    <div id="quest-tracker" class="quest-tracker">
+      <div class="tracker-head"><svg class="ico"><use href="#i-quest"></use></svg><span>Misión principal</span></div>
+      <strong id="tracker-title">La Espada Rota</strong>
+      <p id="tracker-text">Habla con la Anciana en la plaza.</p>
+    </div>
+    <div class="hud-bottom">
+      <div class="creature-chip" id="creature-chip">
+        <div class="creature-orb"><canvas id="creature-icon" width="72" height="72"></canvas></div>
+        <div><small>Criatura activa</small><strong id="creature-name">Brasita</strong><span id="creature-lv">Nv. 1</span></div>
+      </div>
+      <div class="action-cluster" id="action-cluster">
+        <button class="action-btn a" data-action="attack" aria-label="Atacar"><span class="key">A</span><svg class="ico"><use href="#i-sword"></use></svg><small>Ataque</small></button>
+        <button class="action-btn b" data-action="dodge" aria-label="Esquivar"><span class="key">B</span><svg class="ico"><use href="#i-wind"></use></svg><small>Esquivar</small></button>
+        <button class="action-btn x" data-action="magic" aria-label="Magia"><span class="key">X</span><svg class="ico"><use href="#i-fire"></use></svg><small>Magia</small></button>
+        <button class="action-btn y" data-action="interact" aria-label="Interactuar"><span class="key">Y</span><svg class="ico"><use href="#i-star"></use></svg><small>Usar</small></button>
+        <button class="action-btn r" data-action="creature" aria-label="Criatura o captura"><span class="key">R</span><svg class="ico"><use href="#i-paw"></use></svg><small>Criatura</small></button>
+        <button class="action-btn l" data-action="weapon" aria-label="Cambiar arma"><span class="key">L</span><svg class="ico"><use href="#i-bow"></use></svg><small>Arma</small></button>
+        <button class="action-btn q" data-action="guard" aria-label="Bloquear"><span class="key">Q</span><svg class="ico"><use href="#i-shield"></use></svg><small>Guardia</small></button>
+      </div>
+      <div class="hud-utility">
+        <button class="round-btn" id="btn-quick" aria-label="Usar poción"><svg class="ico"><use href="#i-potion"></use></svg><span id="quick-count">3</span></button>
+        <button class="round-btn" id="btn-pause" aria-label="Menú"><svg class="ico"><use href="#i-settings"></use></svg></button>
+      </div>
+    </div>
+    <div id="interaction-prompt" class="interaction-prompt hidden"><span class="key">Y</span><span id="interaction-text">Interactuar</span></div>
+    <div id="toast-stack" class="toast-stack"></div>
+    <div id="damage-flash"></div>
+  </div>
+
+  <div id="touch-layer" class="touch-layer hidden">
+    <div id="joystick" class="joystick"><div class="stick-ring"></div><div class="stick-knob" id="stick-knob"></div></div>
+    <div class="touch-buttons">
+      <button data-touch="attack" class="touch-btn t-a">A</button>
+      <button data-touch="dodge" class="touch-btn t-b">B</button>
+      <button data-touch="magic" class="touch-btn t-x">X</button>
+      <button data-touch="interact" class="touch-btn t-y">Y</button>
+      <button data-touch="guard" class="touch-btn t-q">Q</button>
+      <button data-touch="creature" class="touch-btn t-r" aria-label="Criatura o captura">R</button>
+      <button data-touch="weapon" class="touch-btn t-l" aria-label="Cambiar arma">L</button>
+    </div>
+  </div>
+
+  <div id="screen-title" class="screen title-screen">
+    <div class="title-sky"><canvas id="title-canvas"></canvas></div>
+    <div class="title-grain"></div>
+    <div class="title-mountains" aria-hidden="true">
+      <svg viewBox="0 0 1600 420" preserveAspectRatio="none"><path d="M0 360 180 190 300 280 520 90 700 300 860 180 1050 330 1240 150 1420 300 1600 210V420H0Z" fill="#0b1224" opacity=".9"/><path d="M0 400 240 280 430 350 650 230 900 370 1110 250 1340 360 1600 290V420H0Z" fill="#060a14"/></svg>
+    </div>
+    <div class="title-content">
+      <div class="title-eyebrow"><span></span>Un RPG de acción y criaturas celestiales<span></span></div>
+      <div class="title-mark">
+        <div class="title-sigil"><svg viewBox="0 0 100 100"><path d="M50 4 60 38l34 12-34 12-10 34-10-34L6 50l34-12z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="50" cy="50" r="11" fill="none" stroke="currentColor" stroke-width="1"/></svg></div>
+        <h1><span class="line-one">LA ESPADA</span><span class="line-two">CELESTIAL</span></h1>
+        <p class="title-sub">RPG RETRO · ECOS DEL FIRMAMENTO</p>
+      </div>
+      <nav class="title-menu" aria-label="Menú principal">
+        <button class="menu-btn primary" id="btn-new" aria-label="Play"><span class="glyph"><svg class="ico"><use href="#i-play"></use></svg></span><span><strong>Nueva partida</strong><small>Forja tu leyenda</small></span></button>
+        <button class="menu-btn" id="btn-continue"><span class="glyph"><svg class="ico"><use href="#i-save"></use></svg></span><span><strong>Continuar</strong><small id="continue-label">Sin partidas guardadas</small></span></button>
+        <button class="menu-btn" id="btn-title-settings"><span class="glyph"><svg class="ico"><use href="#i-settings"></use></svg></span><span><strong>Ajustes</strong><small>Audio, controles y pantalla</small></span></button>
+        <button class="menu-btn" id="btn-credits"><span class="glyph"><svg class="ico"><use href="#i-book"></use></svg></span><span><strong>Créditos y alcance</strong><small>Un juego hecho para la web</small></span></button>
+      </nav>
+      <div class="title-controls">
+        <span><kbd>WASD</kbd> mover</span><span><kbd>J</kbd> atacar</span><span><kbd>K</kbd> esquivar</span><span><kbd>X</kbd> magia</span><span><kbd>E</kbd> interactuar</span><span><kbd>U</kbd> arma</span><span><kbd>R</kbd> criatura</span><span><kbd>Q</kbd> guardia</span><span><kbd>Esc</kbd> pausa</span>
+      </div>
+    </div>
+    <div class="title-footer"><span>v1.0 · Aventura completa en un solo archivo</span><span>Teclado · Mando · Táctil</span></div>
+  </div>
+
+  <div id="screen-create" class="screen create-screen hidden">
+    <div class="create-bg"></div>
+    <header class="create-header"><button class="back-btn" id="create-back"><svg class="ico"><use href="#i-arrow"></use></svg> Volver</button><div><span class="eyebrow">El despertar</span><h2>Forja a tu heroína</h2></div><button class="help-btn" id="create-help">?</button></header>
+    <div class="create-layout">
+      <section class="portrait-stage">
+        <div class="portrait-aura"></div>
+        <canvas id="create-preview" width="420" height="520"></canvas>
+        <div class="portrait-plate"><span id="create-name-display">Astra</span><small id="create-class-display">Viajera del Alba</small></div>
+        <div class="creator-tip"><svg class="ico"><use href="#i-celestial"></use></svg> Tu apariencia y estadísticas se guardan en la partida.</div>
+      </section>
+      <section class="create-form">
+        <div class="field"><label for="name-input">Nombre</label><input id="name-input" maxlength="16" value="Astra" autocomplete="off" spellcheck="false"><small>Entre 2 y 16 caracteres</small></div>
+        <div class="form-row">
+          <div class="field"><label>Peinado</label><div class="swatch-row" id="hair-style-row"></div></div>
+          <div class="field"><label>Color de cabello</label><div class="swatch-row colors" id="hair-color-row"></div></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>Atuendo</label><div class="swatch-row" id="outfit-row"></div></div>
+          <div class="field"><label>Color del atuendo</label><div class="swatch-row colors" id="outfit-color-row"></div></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>Tono de piel</label><div class="swatch-row colors" id="skin-row"></div></div>
+          <div class="field"><label>Accesorio</label><div class="swatch-row" id="accessory-row"></div></div>
+        </div>
+        <div class="field stats-field">
+          <div class="stats-head"><label>Atributos iniciales</label><span>Puntos restantes: <strong id="points-left">5</strong></span></div>
+          <div class="stat-allocation" id="stat-allocation"></div>
+        </div>
+        <div class="create-actions"><button class="ghost-btn" id="btn-randomize">Aleatorio</button><button class="gold-btn" id="btn-begin"><svg class="ico"><use href="#i-celestial"></use></svg> Comenzar aventura</button></div>
+      </section>
+    </div>
+  </div>
+
+  <div id="screen-menu" class="screen menu-screen hidden">
+    <div class="menu-backdrop"></div>
+    <div class="menu-shell">
+      <header class="menu-header">
+        <div class="menu-title"><span class="eyebrow">Diario de viaje</span><h2 id="menu-heading">Menú</h2></div>
+        <div class="menu-wallet"><span><svg class="ico"><use href="#i-coin"></use></svg><b id="menu-gold">0</b> oro</span><span><svg class="ico"><use href="#i-star"></use></svg><b id="menu-level">Nv. 1</b></span><span id="menu-time">00:00</span></div>
+        <button class="close-btn" id="menu-close" aria-label="Cerrar menú"><svg class="ico"><use href="#i-close"></use></svg></button>
+      </header>
+      <div class="menu-body">
+        <nav class="menu-nav" id="menu-nav" aria-label="Secciones del menú"></nav>
+        <div class="menu-content" id="menu-content"></div>
+      </div>
+      <footer class="menu-footer"><span>← → navegar · Enter seleccionar · Esc volver</span><span id="menu-context"></span></footer>
+    </div>
+  </div>
+
+  <div id="dialogue-layer" class="dialogue-layer hidden">
+    <div class="dialogue-box">
+      <div class="dialogue-portrait"><canvas id="dialogue-portrait" width="120" height="120"></canvas></div>
+      <div class="dialogue-copy"><div class="dialogue-name" id="dialogue-name">Anciana</div><p id="dialogue-text"></p><div class="dialogue-choices" id="dialogue-choices"></div><div class="dialogue-next" id="dialogue-next">▼</div></div>
+    </div>
+  </div>
+
+  <div id="modal-layer" class="modal-layer hidden">
+    <div class="modal-card" id="modal-card"></div>
+  </div>
+
+  <div id="screen-ending" class="screen ending-screen hidden">
+    <div class="ending-stars"></div>
+    <div class="ending-content"><span class="eyebrow">El cielo recuerda</span><h2 id="ending-title">La Espada Celestial</h2><p id="ending-text"></p><div class="ending-stats" id="ending-stats"></div><button class="gold-btn" id="ending-continue">Seguir explorando</button></div>
+  </div>
+
+  <div id="screen-gameover" class="screen gameover-screen hidden">
+    <div class="gameover-content"><span class="eyebrow">La luz se desvanece</span><h2>Has caído</h2><p>El santuario más cercano te devolverá al mundo. Perderás parte del oro, pero no tu historia.</p><div class="gameover-actions"><button class="gold-btn" id="btn-revive">Renacer en el santuario</button><button class="ghost-btn" id="btn-load">Cargar partida</button></div></div>
+  </div>
+
+  <div id="loading-screen" class="screen loading-screen">
+    <div class="loading-sigil"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="44" fill="none" stroke="currentColor" stroke-width="1"/><path d="M60 8 68 48l40 12-40 12-8 40-8-40L12 60l40-12z" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></div>
+    <p id="loading-text">Tejiendo el firmamento…</p>
+    <div class="loading-bar"><i id="loading-fill"></i></div>
+  </div>
+</div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
