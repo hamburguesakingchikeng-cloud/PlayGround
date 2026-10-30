@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#0a1122">
+  <meta name="description" content="La Espada Celestial: un RPG de acción retro con alma de anime, bosques de luna y una espada que separó la noche del mundo.">
+  <title>La Espada Celestial · RPG Retro</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="game-canvas" aria-label="Mundo de La Espada Celestial"></canvas>
+  <div class="screen-grain" aria-hidden="true"></div>
+  <div class="screen-vignette" aria-hidden="true"></div>
+  <div id="flash" aria-hidden="true"></div>
+
+  <!-- ===================== PANTALLA DE TÍTULO ===================== -->
+  <section id="title-screen" class="screen title-screen">
+    <div class="title-sigil" aria-hidden="true">
+      <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="46"/><path d="M60 7v106M7 60h106M23 23l74 74M97 23L23 97"/><circle cx="60" cy="60" r="18"/></svg>
+    </div>
+    <div class="title-content">
+      <div class="title-kicker"><span></span>UNA LEYENDA DE LUMA<span></span></div>
+      <h1 class="game-logo">
+        <span class="logo-top">LA ESPADA</span>
+        <span class="logo-main">CELESTIAL</span>
+        <span class="logo-sub">R P G &nbsp; R E T R O</span>
+      </h1>
+      <p class="title-tagline">Cuando la noche devoró el santuario,<br>una hoja de luz cayó del cielo.</p>
+      <nav class="title-menu" aria-label="Menú principal">
+        <button class="title-btn title-btn-primary" data-action="start" aria-label="Start">
+          <span class="title-btn-mark">✦</span>
+          <span><b>JUGAR</b><small>Nueva partida</small></span>
+          <span class="title-btn-key">ENTER</span>
+        </button>
+        <button class="title-btn" data-action="continue" id="btn-continue" hidden>
+          <span class="title-btn-mark">◷</span>
+          <span><b>CONTINUAR</b><small id="continue-label">Última partida</small></span>
+        </button>
+        <button class="title-btn" data-action="create">
+          <span class="title-btn-mark">✧</span>
+          <span><b>PERSONALIZAR HÉROE</b><small>Forja tu leyenda</small></span>
+        </button>
+        <button class="title-btn title-btn-quiet" data-action="settings">
+          <span class="title-btn-mark">⚙</span>
+          <span><b>AJUSTES</b><small>Audio, mandos y pantalla</small></span>
+        </button>
+      </nav>
+      <div class="title-meta">
+        <span>CAPÍTULO I</span><i></i><span>SUSURROS DEL BOSQUE DE LIRIOS</span>
+      </div>
+    </div>
+    <div class="title-footer">
+      <div class="title-platforms"><span class="pill">ANDROID</span><span class="pill">PC</span><span class="pill">TÁCTIL</span><span class="pill">MANDO</span></div>
+      <div class="title-hint"><kbd>↑</kbd><kbd>↓</kbd> navegar · <kbd>Enter</kbd> elegir</div>
+      <div class="title-version">v1.0 · arte y música originales</div>
+    </div>
+    <div class="title-corner tl"></div><div class="title-corner tr"></div><div class="title-corner bl"></div><div class="title-corner br"></div>
+  </section>
+
+  <!-- ===================== CREACIÓN DE PERSONAJE ===================== -->
+  <section id="creator-screen" class="screen creator-screen hidden">
+    <div class="creator-shell">
+      <header class="creator-header">
+        <div>
+          <div class="title-kicker"><span></span>FORJA TU LEYENDA<span></span></div>
+          <h2>EL HÉROE DE LUMA</h2>
+          <p>Tu nombre será recordado por el bosque. Elige con cuidado.</p>
+        </div>
+        <button class="icon-btn" data-creator-action="back" aria-label="Volver">✕</button>
+      </header>
+      <div class="creator-grid">
+        <div class="creator-preview">
+          <div class="preview-frame">
+            <canvas id="creator-canvas" width="420" height="560"></canvas>
+            <div class="preview-glow"></div>
+            <div class="preview-plinth"></div>
+            <div class="preview-label">VISTA PREVIA</div>
+          </div>
+          <div class="creator-stats">
+            <div><span>VIDA</span><b id="creator-hp">120</b></div>
+            <div><span>MANÁ</span><b id="creator-mp">42</b></div>
+            <div><span>ATAQUE</span><b id="creator-atk">24</b></div>
+            <div><span>DEFENSA</span><b id="creator-def">6</b></div>
+          </div>
+        </div>
+        <div class="creator-form">
+          <label class="field">
+            <span>NOMBRE DEL HÉROE</span>
+            <input id="hero-name" maxlength="16" autocomplete="off" spellcheck="false" value="Elian">
+          </label>
+          <div class="option-list">
+            <div class="option-row" data-option="hair">
+              <span class="option-label">PEINADO</span>
+              <button class="cycle-btn" data-dir="-1" aria-label="Anterior">‹</button>
+              <b id="opt-hair">Largo lunar</b>
+              <button class="cycle-btn" data-dir="1" aria-label="Siguiente">›</button>
+            </div>
+            <div class="option-row" data-option="hairColor">
+              <span class="option-label">CABELLO</span>
+              <button class="cycle-btn" data-dir="-1" aria-label="Anterior">‹</button>
+              <b id="opt-hairColor">Plata de luna</b>
+              <button class="cycle-btn" data-dir="1" aria-label="Siguiente">›</button>
+            </div>
+            <div class="option-row" data-option="outfit">
+              <span class="option-label">VESTIMENTA</span>
+              <button class="cycle-btn" data-dir="-1" aria-label="Anterior">‹</button>
+              <b id="opt-outfit">Azul del alba</b>
+              <button class="cycle-btn" data-dir="1" aria-label="Siguiente">›</button>
+            </div>
+            <div class="option-row" data-option="weapon">
+              <span class="option-label">ARMA INICIAL</span>
+              <button class="cycle-btn" data-dir="-1" aria-label="Anterior">‹</button>
+              <b id="opt-weapon">Filo del Alba</b>
+              <button class="cycle-btn" data-dir="1" aria-label="Siguiente">›</button>
+            </div>
+          </div>
+          <div class="creator-lore">
+            <span class="rune">✦</span>
+            <p id="creator-desc">Una espada ligera que aún recuerda el primer amanecer de Luma.</p>
+          </div>
+          <div class="creator-actions">
+            <button class="btn btn-ghost" data-creator-action="random">SORPRÉNDEME</button>
+            <button class="btn btn-primary" data-creator-action="begin">COMENZAR AVENTURA <span>⏎</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="title-corner tl"></div><div class="title-corner tr"></div><div class="title-corner bl"></div><div class="title-corner br"></div>
+  </section>
+
+  <!-- ===================== HUD ===================== -->
+  <div id="hud" class="hidden" aria-live="polite">
+    <div class="hud-top-left">
+      <div class="hero-panel">
+        <div class="portrait-wrap">
+          <canvas id="hud-portrait" width="148" height="148"></canvas>
+          <span class="level-badge" id="hud-level">1</span>
+        </div>
+        <div class="hero-bars">
+          <div class="hero-name-row"><b id="hud-name">Elian</b><span id="hud-title">Caminante de Luma</span></div>
+          <div class="bar hp"><i></i><span class="bar-fill" id="hp-fill"></span><span class="bar-text" id="hp-text">120 / 120</span></div>
+          <div class="bar mp"><i></i><span class="bar-fill" id="mp-fill"></span><span class="bar-text" id="mp-text">42 / 42</span></div>
+          <div class="bar st"><i></i><span class="bar-fill" id="st-fill"></span><span class="bar-text" id="st-text">88 / 88</span></div>
+          <div class="xp-row"><span>XP</span><div class="xp-track"><i id="xp-fill"></i></div><b id="xp-text">0 / 60</b></div>
+        </div>
+      </div>
+      <div class="quest-card" id="quest-card">
+        <div class="quest-ribbon"><span id="quest-chapter">CAPÍTULO I</span><b id="quest-count">01</b></div>
+        <h3 id="quest-title">El despertar de Luma</h3>
+        <p id="quest-objective">Habla con Elara en el santuario</p>
+        <div class="quest-progress" id="quest-progress"></div>
+      </div>
+      <div class="status-chips">
+        <span id="chip-gold">◈ 0</span>
+        <span id="chip-zone">Aldea de Luma</span>
+        <span id="chip-time">☾ Crepúsculo</span>
+      </div>
+    </div>
+
+    <div class="hud-top-right">
+      <div class="minimap-panel">
+        <div class="minimap-head"><span>MAPA</span><b id="minimap-zone">ALDEA DE LUMA</b></div>
+        <div class="minimap-ring"><canvas id="minimap" width="220" height="220"></canvas><i class="compass n">N</i><i class="compass e">E</i><i class="compass s">S</i><i class="compass o">O</i></div>
+        <div class="minimap-foot"><span class="dot player"></span> Tú <span class="dot quest"></span> Objetivo</div>
+      </div>
+      <div class="hud-controls-hint" id="hud-controls-hint">
+        <span><kbd>WASD</kbd> mover</span><span><kbd>J</kbd> atacar</span><span><kbd>K</kbd> esquivar</span><span><kbd>E</kbd> interactuar</span>
+      </div>
+    </div>
+
+    <div class="boss-hud hidden" id="boss-hud">
+      <div class="boss-name"><span>GUARDIÁN DEL SANTUARIO</span><b id="boss-phase">FASE I</b></div>
+      <div class="boss-bar"><i></i><span id="boss-fill"></span><em id="boss-text">1450 / 1450</em></div>
+      <p>El último custodio de la Espada Celestial</p>
+    </div>
+
+    <div class="quickbar" id="quickbar">
+      <button class="quick-slot" data-quick="potion" title="Usar poción (F)">
+        <span class="q-key">F</span><span class="q-icon potion-icon">⚗</span><span class="q-name" id="quick-potion">Poción ×3</span>
+      </button>
+      <button class="quick-slot" data-quick="weapon" title="Cambiar arma (Q)">
+        <span class="q-key">L</span><span class="q-icon">⚔</span><span class="q-name" id="quick-weapon">Filo del Alba</span>
+      </button>
+      <button class="quick-slot" data-quick="skill" title="Habilidad (L)">
+        <span class="q-key">X</span><span class="q-icon">✦</span><span class="q-name" id="quick-skill">Corte del Alba</span>
+      </button>
+      <button class="quick-slot" data-quick="companion" title="Criatura (R)">
+        <span class="q-key">R</span><span class="q-icon">❖</span><span class="q-name" id="quick-companion">Sin vínculo</span>
+      </button>
+    </div>
+
+    <div class="combo-display" id="combo-display"><b id="combo-count">2</b><span>GOLPES</span><i>×<em id="combo-mult">1.2</em></i></div>
+    <div class="interact-prompt hidden" id="interact-prompt"><span class="interact-key">E</span><b id="interact-text">Hablar</b></div>
+    <div class="capture-prompt hidden" id="capture-prompt"><span class="interact-key">Y</span><b>Sellar criatura</b><i id="capture-chance">62%</i></div>
+
+    <!-- Controles táctiles -->
+    <div id="touch-ui" class="touch-ui hidden">
+      <div class="joystick-zone" id="joystick-zone">
+        <div class="joystick-base">
+          <span class="dpad-arrow up">▲</span><span class="dpad-arrow down">▼</span><span class="dpad-arrow left">◀</span><span class="dpad-arrow right">▶</span>
+          <div class="joystick-knob" id="joystick-knob"></div>
+        </div>
+      </div>
+      <div class="touch-actions" id="touch-actions">
+        <button class="tbtn tbtn-b" data-touch="dodge" aria-label="Esquivar">B<small>esquivar</small></button>
+        <button class="tbtn tbtn-a" data-touch="attack" aria-label="Atacar">A<small>atacar</small></button>
+        <button class="tbtn tbtn-y" data-touch="interact" aria-label="Interactuar">Y<small>acción</small></button>
+        <button class="tbtn tbtn-x" data-touch="skill" aria-label="Habilidad">X<small>habilidad</small></button>
+      </div>
+      <div class="touch-shoulders">
+        <button class="tbtn mini" data-touch="prevWeapon">L<small>arma</small></button>
+        <button class="tbtn mini" data-touch="companion">R<small>criatura</small></button>
+      </div>
+      <div class="touch-system">
+        <button class="tbtn system" data-touch="pause" aria-label="Pausa">☰</button>
+        <button class="tbtn system" data-touch="journal" aria-label="Diario">▤</button>
+        <button class="tbtn system" data-touch="potion" aria-label="Poción">⚗</button>
+      </div>
+    </div>
+
+    <div class="chapter-card" id="chapter-card">
+      <span>CAPÍTULO I</span><b>EL DESPERTAR DE LUMA</b><i></i>
+    </div>
+    <div class="region-toast" id="region-toast"><span></span><b>ALDEA DE LUMA</b><i>Donde el bosque aprende a soñar</i></div>
+  </div>
+
+  <!-- ===================== DIÁLOGO ===================== -->
+  <div id="dialogue-layer" class="dialogue-layer hidden">
+    <div class="dialogue-box" id="dialogue-box">
+      <div class="dialogue-portrait-frame"><canvas id="dialogue-portrait" width="180" height="180"></canvas><span class="portrait-gem">✦</span></div>
+      <div class="dialogue-body">
+        <div class="dialogue-speaker"><span id="dialogue-speaker">ELARA</span><i id="dialogue-role">MAESTRA DEL SANTUARIO</i></div>
+        <p id="dialogue-text"></p>
+        <div class="dialogue-choices" id="dialogue-choices"></div>
+        <div class="dialogue-next"><kbd>E</kbd> / <kbd>Y</kbd> continuar <span class="dialogue-arrow">›</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PAUSA / MENÚS ===================== -->
+  <div id="pause-layer" class="overlay hidden">
+    <div class="pause-shell">
+      <header class="pause-header">
+        <div class="pause-brand"><span class="rune">✦</span><div><b>LA ESPADA CELESTIAL</b><small>DIARIO DEL CAMINANTE</small></div></div>
+        <div class="pause-hero"><canvas id="menu-portrait" width="108" height="108"></canvas><div><b id="menu-name">Elian</b><span id="menu-level">Nivel 1 · Caminante de Luma</span></div></div>
+        <button class="icon-btn close-menu" data-menu-close aria-label="Cerrar">✕</button>
+      </header>
+      <div class="pause-body">
+        <nav class="menu-tabs" id="menu-tabs">
+          <button data-tab="status" class="active"><span>◈</span>Estado</button>
+          <button data-tab="equipment"><span>⚔</span>Equipo</button>
+          <button data-tab="inventory"><span>⚗</span>Objetos</button>
+          <button data-tab="skills"><span>✦</span>Habilidades</button>
+          <button data-tab="bestiary"><span>❖</span>Criaturas</button>
+          <button data-tab="quests"><span>▤</span>Diario</button>
+          <button data-tab="settings"><span>⚙</span>Ajustes</button>
+        </nav>
+        <div class="menu-content" id="menu-content"></div>
+      </div>
+      <footer class="pause-footer">
+        <div class="save-state" id="save-state"><span></span> Guardado automático activo</div>
+        <div class="pause-actions">
+          <button class="btn btn-ghost" data-menu-save>GUARDAR PARTIDA</button>
+          <button class="btn btn-ghost danger" data-menu-title>SALIR AL TÍTULO</button>
+          <button class="btn btn-primary" data-menu-close>CONTINUAR <span>ESC</span></button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===================== AVISOS ===================== -->
+  <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
+  <div id="subtitle-bar" class="subtitle-bar hidden"><span id="subtitle-text"></span></div>
+
+  <!-- ===================== FINAL / DERROTA ===================== -->
+  <div id="ending-screen" class="overlay ending-screen hidden">
+    <div class="ending-rays"></div>
+    <div class="ending-content">
+      <span class="ending-kicker">LA LEYENDA HA DESPERTADO</span>
+      <h2>LA ESPADA<br><b>CELESTIAL</b></h2>
+      <p id="ending-text">El Guardián ha caído. La hoja que separó la noche del mundo vuelve a brillar en tus manos.</p>
+      <div class="ending-stats" id="ending-stats"></div>
+      <div class="ending-actions">
+        <button class="btn btn-primary" data-ending-continue>SEGUIR EXPLORANDO</button>
+        <button class="btn btn-ghost" data-ending-title>VOLVER AL TÍTULO</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="gameover-screen" class="overlay gameover-screen hidden">
+    <div class="gameover-content">
+      <span class="ending-kicker">LA NOCHE TE HA RECLAMADO</span>
+      <h2>HAS CAÍDO</h2>
+      <p>Pero Luma aún te recuerda. El último santuario puede devolverte al camino.</p>
+      <div class="ending-actions">
+        <button class="btn btn-primary" data-retry>REINTENTAR</button>
+        <button class="btn btn-ghost" data-gameover-title>VOLVER AL TÍTULO</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="settings-layer" class="overlay hidden">
+    <div class="settings-panel">
+      <header><div><span class="title-kicker"><span></span>AJUSTES<span></span></div><h2>AFINA TU EXPERIENCIA</h2></div><button class="icon-btn" data-settings-close>✕</button></header>
+      <div id="settings-content"></div>
+    </div>
+  </div>
+
+  <div id="rotate-hint" class="rotate-hint hidden"><span>↻</span><b>GIRA TU DISPOSITIVO</b><p>La Espada Celestial se disfruta en horizontal.</p><button data-rotate-dismiss>JUGAR ASÍ</button></div>
+
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-emblem"><span>✦</span></div>
+    <h1>LA ESPADA <b>CELESTIAL</b></h1>
+    <div class="loading-track"><i></i></div>
+    <p>TEJIENDO EL BOSQUE DE LIRIOS…</p>
+  </div>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ico-sword" viewBox="0 0 24 24"><path d="M4 20l3.5-3.5M14.5 3.5L21 3l-.5 6.5L9 21l-3-3L17.5 6.5M5 16l3 3"/></symbol>
+  <symbol id="ico-dagger" viewBox="0 0 24 24"><path d="M6 18l2.5-2.5M16 4l4 4-8 8-4-4 8-8zM4 20l3-3"/></symbol>
+  <symbol id="ico-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6l8-3z"/><path d="M12 7v9M8 10h8"/></symbol>
+  <symbol id="ico-star" viewBox="0 0 24 24"><path d="M12 2l2.8 6.4L22 12l-7.2 3.6L12 22l-2.8-6.4L2 12l7.2-3.6L12 2z"/></symbol>
+</svg>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

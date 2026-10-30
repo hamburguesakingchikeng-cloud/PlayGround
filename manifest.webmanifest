@@ -1,0 +1,16 @@
+{
+  "name": "La Espada Celestial · RPG Retro",
+  "short_name": "Espada Celestial",
+  "description": "Un RPG de acción retro de fantasía: explora el Bosque de Lirios, sella criaturas y reclama la Espada Celestial.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#070d18",
+  "theme_color": "#0a1122",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

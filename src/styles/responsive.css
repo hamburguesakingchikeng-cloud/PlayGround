@@ -1,0 +1,222 @@
+/* ===== Tabletas ===== */
+@media (max-width: 1120px) {
+  .hud-controls-hint { display: none; }
+  .status-layout { grid-template-columns: 1fr; gap: 18px; }
+  .quick-slot { min-width: 104px; }
+  .quick-slot .q-name { max-width: 68px; }
+}
+
+/* ===== Móvil horizontal ===== */
+@media (max-width: 980px), (max-height: 600px) {
+  .title-content { left: 5.5vw; width: 54vw; }
+  .logo-main { font-size: clamp(54px, 9vw, 90px); }
+  .title-tagline { font-size: 17px; margin-bottom: 18px; }
+  .title-menu { width: 345px; }
+  .title-btn { min-height: 44px; }
+  .title-btn-primary { min-height: 53px; }
+  .title-btn-primary b { font-size: 15px; }
+  .title-btn-quiet { display: none; }
+  .title-footer { font-size: 7px; }
+  .title-footer .title-hint { display: none; }
+  .title-meta { margin-top: 18px; }
+  .hud-top-left { top: calc(9px + var(--safe-top)); left: calc(9px + var(--safe-left)); width: min(330px, 39vw); gap: 5px; }
+  .hero-panel { padding: 5px 9px 5px 5px; gap: 7px; }
+  .portrait-wrap { width: 44px; height: 44px; }
+  .hero-name-row { margin-bottom: 2px; }
+  .hero-name-row b { font-size: 11px; }
+  .hero-name-row span { display: none; }
+  .bar { height: 8px; margin-bottom: 3px; }
+  .bar.st { height: 5px; }
+  .bar-text { font-size: 5.5px; }
+  .quest-card { padding: 7px 10px 8px; width: 255px; }
+  .quest-card h3 { font-size: 10px; }
+  .quest-card p { font-size: 7px; }
+  .quest-ribbon { margin-bottom: 2px; }
+  .status-chips span { padding: 2px 6px; font-size: 5.5px; }
+  .hud-top-right { top: calc(9px + var(--safe-top)); right: calc(9px + var(--safe-right)); gap: 5px; }
+  .minimap-panel { width: 120px; padding: 5px; }
+  .minimap-head { padding-bottom: 3px; }
+  .minimap-head span { font-size: 5px; }
+  .minimap-head b { font-size: 5px; max-width: 75px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .minimap-foot { font-size: 4.5px; }
+  .boss-hud { width: 44vw; top: calc(7px + var(--safe-top)); }
+  .boss-name span { font-size: 8px; }
+  .boss-bar { height: 9px; }
+  .quickbar { bottom: calc(6px + var(--safe-bottom)); gap: 3px; padding: 3px; }
+  .quick-slot { min-width: 82px; height: 31px; padding: 0 7px 0 4px; gap: 3px; }
+  .quick-slot .q-name { font-size: 6px; max-width: 52px; }
+  .q-icon { font-size: 13px; width: 14px; }
+  .interact-prompt, .capture-prompt { bottom: 18%; padding: 5px 10px 5px 5px; }
+  .interact-key { width: 22px; height: 22px; font-size: 9px; }
+  .interact-prompt b, .capture-prompt b { font-size: 7px; }
+  .combo-display { bottom: 26%; right: 12px; }
+  .combo-display b { font-size: 24px; }
+  .chapter-card { top: 24%; }
+  .chapter-card b { font-size: 23px; }
+  .toast-stack { top: 33%; right: 10px; }
+  .toast { min-width: 150px; padding: 6px 10px; font-size: 7px; }
+  .pause-shell { width: 97vw; height: 94vh; }
+  .pause-header { padding: 8px 14px; gap: 10px; }
+  .pause-brand b { font-size: 9px; }
+  .pause-brand small { font-size: 5px; }
+  .pause-hero { padding-right: 10px; }
+  .pause-hero b { font-size: 9px; }
+  .pause-hero span { font-size: 5.5px; }
+  #menu-portrait { width: 32px; height: 32px; }
+  .pause-body { flex-direction: column; }
+  .menu-tabs { width: 100%; padding: 0; border-right: 0; border-bottom: 1px solid rgba(232,200,122,.1); flex-direction: row; overflow-x: auto; flex: 0 0 auto; scrollbar-width: none; }
+  .menu-tabs::-webkit-scrollbar { display: none; }
+  .menu-tabs button { white-space: nowrap; padding: 8px 12px; border-left: 0; border-bottom: 2px solid transparent; font-size: 8px; gap: 5px; }
+  .menu-tabs button.active { border-left-color: transparent; border-bottom-color: var(--gold); background: linear-gradient(0deg, rgba(232,200,122,.08), transparent); }
+  .menu-tabs button span { font-size: 10px; width: 12px; }
+  .menu-content { padding: 13px 16px 18px; }
+  .menu-section-head { margin-bottom: 11px; padding-bottom: 7px; }
+  .menu-section-head h2 { font-size: 16px; }
+  .pause-footer { height: 46px; padding: 0 12px; }
+  .pause-actions .btn { min-height: 30px; font-size: 7px; padding: 0 9px; }
+  .save-state { display: none; }
+  .equip-grid, .creature-grid, .shop-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .equip-card { padding: 8px; gap: 8px; }
+  .equip-card .icon-box { width: 31px; height: 31px; font-size: 16px; }
+  .equip-card h4 { font-size: 9px; }
+  .equip-card p { display: none; }
+  .item-row { padding: 6px 9px; }
+  .setting-row { grid-template-columns: 1fr 160px; padding: 8px 10px; }
+  .setting-control input[type=range] { width: 90px; }
+  .dialogue-layer { padding: 0 2vw calc(3vh + var(--safe-bottom)); }
+  .dialogue-box { width: min(820px, 96vw); padding: 10px 14px 10px 10px; gap: 12px; }
+  .dialogue-portrait-frame { width: 76px; height: 76px; }
+  .dialogue-speaker span { font-size: 11px; }
+  .dialogue-speaker i { font-size: 5.5px; }
+  #dialogue-text { font-size: 10px; line-height: 1.5; min-height: 30px; }
+  .dialogue-next { font-size: 5.5px; }
+  .ending-content h2 { font-size: 45px; }
+  .creator-header .title-kicker { display: none; }
+  .creator-shell { width: 98vw; height: 97vh; }
+  .creator-grid { grid-template-columns: 33% 67%; }
+  .creator-preview { padding: 10px 11px; }
+  .creator-stats { display: none; }
+  .creator-form { padding: 10px 16px; gap: 8px; }
+  .creator-form .field > span { margin-bottom: 4px; }
+  .field input { height: 37px; font-size: 15px; }
+  .option-row { min-height: 34px; }
+  .creator-lore { display: none; }
+  .creator-actions { padding-top: 2px; }
+  .creator-actions .btn { min-height: 36px; }
+  .settings-panel { padding: 16px 19px; }
+  .settings-panel h2 { font-size: 17px; }
+}
+
+/* ===== Móvil horizontal de poca altura (Android en landscape) ===== */
+@media (max-height: 520px) and (orientation: landscape) {
+  .title-content { top: 50%; width: 54vw; }
+  .title-kicker { display: none; }
+  .game-logo { margin-bottom: 9px; }
+  .logo-top { font-size: 15px; letter-spacing: .36em; }
+  .logo-main { font-size: clamp(42px, 6.2vw, 58px); }
+  .logo-sub { font-size: 6px; margin-top: 4px; letter-spacing: .52em; }
+  .title-tagline { display: none; }
+  .title-menu { width: min(330px, 100%); gap: 5px; }
+  .title-btn { min-height: 37px; padding: 5px 12px 5px 10px; grid-template-columns: 22px 1fr auto; gap: 8px; }
+  .title-btn b { font-size: 10px; }
+  .title-btn small { font-size: 7px; margin-top: 1px; }
+  .title-btn-primary { min-height: 47px; }
+  .title-btn-primary b { font-size: 14px; }
+  .title-btn-primary .title-btn-mark { font-size: 17px; }
+  .title-btn-mark { font-size: 13px; }
+  .title-btn-quiet { display: grid; }
+  .title-btn-quiet b { font-size: 9px; }
+  .title-meta { display: none; }
+  .title-footer { display: none; }
+  .title-sigil { width: 46vh; height: 46vh; }
+}
+
+/* ===== Móvil vertical ===== */
+@media (max-width: 620px) and (orientation: portrait) {
+  .title-screen::after { background: linear-gradient(0deg, rgba(3,8,17,.94) 0%, rgba(3,8,17,.55) 54%, rgba(3,8,17,.3) 100%); }
+  .title-content { left: 7vw; top: auto; bottom: calc(8vh + var(--safe-bottom)); transform: none; width: 86vw; animation: none; }
+  .title-sigil { left: 50%; top: 27%; width: 80vw; height: 80vw; transform: translate(-50%, -50%); }
+  .title-kicker { font-size: 7px; letter-spacing: .34em; margin-bottom: 12px; }
+  .game-logo { margin-bottom: 12px; }
+  .logo-top { font-size: 20px; letter-spacing: .35em; }
+  .logo-main { font-size: clamp(38px, 11.8vw, 64px); letter-spacing: .03em; }
+  .logo-sub { font-size: 7px; letter-spacing: .5em; }
+  .title-tagline { font-size: 15px; line-height: 1.35; margin-bottom: 15px; }
+  .title-menu { width: 100%; gap: 5px; }
+  .title-btn { min-height: 45px; }
+  .title-btn-primary { min-height: 57px; }
+  .title-btn-quiet { display: none; }
+  .title-meta { margin-top: 15px; font-size: 6px; }
+  .title-footer { left: 7vw; right: 7vw; bottom: calc(15px + var(--safe-bottom)); }
+  .title-footer .title-platforms { display: none; }
+  .title-footer .title-hint { display: flex; font-size: 6px; }
+  .title-footer .title-version { display: none; }
+  .hud-top-left { top: calc(7px + var(--safe-top)); left: calc(7px + var(--safe-left)); width: calc(100vw - 118px); gap: 4px; }
+  .hero-panel { padding: 4px 7px 4px 4px; }
+  .portrait-wrap { width: 37px; height: 37px; }
+  .hero-name-row b { font-size: 9px; }
+  .bar { height: 6px; margin-bottom: 2px; }
+  .bar.st { height: 4px; }
+  .bar-text { font-size: 4.5px; }
+  .xp-row { display: none; }
+  .quest-card { padding: 5px 8px 6px; width: 205px; }
+  .quest-ribbon span { font-size: 5.5px; }
+  .quest-card h3 { font-size: 8px; }
+  .quest-card p { font-size: 6px; line-height: 1.3; }
+  .quest-progress { display: none; }
+  .status-chips { display: none; }
+  .hud-top-right { top: calc(7px + var(--safe-top)); right: calc(7px + var(--safe-right)); }
+  .minimap-panel { width: 99px; padding: 4px; }
+  .minimap-head span, .minimap-foot { display: none; }
+  .minimap-head b { font-size: 4.5px; max-width: 90px; }
+  .boss-hud { width: 94vw; top: calc(6px + var(--safe-top)); }
+  .boss-name span { font-size: 7px; }
+  .quickbar { display: none; }
+  .interact-prompt, .capture-prompt { bottom: 41%; }
+  .combo-display { right: 9px; bottom: 42%; }
+  .chapter-card { top: 20%; }
+  .chapter-card b { font-size: 18px; }
+  .toast-stack { top: 31%; right: 7px; max-width: 76vw; }
+  .toast { min-width: 140px; }
+  .pause-shell { width: 98vw; height: 96vh; }
+  .pause-brand { display: none; }
+  .menu-content { padding: 10px 12px 14px; }
+  .status-layout { grid-template-columns: 1fr; gap: 12px; }
+  .big-hero-card { padding: 10px; }
+  .big-hero-card canvas { width: 66px; height: 66px; }
+  .big-hero-card h3 { font-size: 15px; }
+  .equip-grid, .creature-grid, .shop-grid { grid-template-columns: 1fr; }
+  .setting-row { grid-template-columns: 1fr; gap: 7px; }
+  .settings-list { gap: 5px; }
+  .dialogue-layer { padding: 0 2vw calc(2.5vh + var(--safe-bottom)); }
+  .dialogue-box { padding: 8px 10px 8px 8px; gap: 8px; }
+  .dialogue-portrait-frame { width: 54px; height: 54px; }
+  .dialogue-speaker { gap: 6px; margin-bottom: 3px; }
+  .dialogue-speaker span { font-size: 9px; }
+  .dialogue-speaker i { display: none; }
+  #dialogue-text { font-size: 8.5px; line-height: 1.45; min-height: 24px; }
+  .dialogue-next { display: none; }
+  .dialogue-choices button { font-size: 8px; padding: 5px 8px; }
+  .creator-header h2 { font-size: 15px; }
+  .creator-shell { height: 97vh; }
+  .creator-grid { grid-template-columns: 1fr; grid-template-rows: 38% 62%; }
+  .creator-preview { border-right: 0; border-bottom: 1px solid rgba(232,200,122,.1); }
+  .creator-form { padding: 8px 12px; }
+  .creator-actions .btn-ghost { display: none; }
+  .creator-actions .btn-primary { width: 100%; }
+  .creator-form .option-row { grid-template-columns: 1fr 26px 100px 26px; min-height: 30px; }
+  .ending-content h2 { font-size: 39px; }
+  .ending-stats { gap: 12px; }
+  .ending-stats b { font-size: 18px; }
+  .ending-actions { flex-direction: column; }
+  .settings-panel { width: 96vw; }
+}
+
+/* ===== Pantallas táctiles ===== */
+@media (hover: none) and (pointer: coarse) {
+  .hud-controls-hint { display: none; }
+}
+body.touch-active .hud-controls-hint { display: none; }
+body.touch-active .quickbar { bottom: calc(8px + var(--safe-bottom)); }
+body.touch-active .touch-ui { display: block; }
+body:not(.touch-active) .touch-ui { display: none !important; }

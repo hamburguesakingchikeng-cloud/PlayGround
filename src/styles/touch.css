@@ -1,0 +1,75 @@
+.touch-ui { position: absolute; inset: 0; z-index: 22; opacity: var(--touch-opacity); transition: opacity .2s; }
+.touch-ui.editing { background: rgba(4, 10, 20, .25); outline: 1px dashed rgba(232, 200, 122, .2); }
+.joystick-zone {
+  position: absolute; left: calc(19px + var(--safe-left) + var(--joy-dx, 0px)); bottom: calc(18px + var(--safe-bottom) + var(--joy-dy, 0px));
+  width: 174px; height: 174px; transform: scale(var(--touch-scale)); transform-origin: bottom left;
+  touch-action: none;
+}
+.joystick-base {
+  position: absolute; inset: 9px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(20, 38, 60, .44) 0 42%, rgba(10, 20, 37, .5) 43% 100%);
+  border: 1px solid rgba(213, 231, 241, .22);
+  box-shadow: inset 0 0 28px rgba(0,0,0,.35), 0 0 30px rgba(12, 27, 45, .28);
+  backdrop-filter: blur(2px);
+}
+.joystick-base::before { content: ''; position: absolute; inset: 15px; border: 1px solid rgba(232, 200, 122, .13); border-radius: 50%; }
+.joystick-base::after { content: ''; position: absolute; left: 50%; top: 50%; width: 1px; height: 1px; box-shadow: 0 0 18px 2px rgba(232,200,122,.12); }
+.joystick-knob {
+  position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 38% 31%, rgba(238, 245, 246, .38), rgba(101, 126, 145, .25) 42%, rgba(15, 30, 48, .73));
+  border: 1px solid rgba(230, 241, 245, .4);
+  box-shadow: 0 4px 18px rgba(0,0,0,.38), inset 0 1px rgba(255,255,255,.25);
+  transition: transform .05s linear;
+  display: grid; place-items: center;
+}
+.joystick-knob::after { content: ''; width: 18px; height: 18px; border-radius: 50%; border: 1px solid rgba(232, 200, 122, .32); }
+.dpad-arrow { position: absolute; color: rgba(225, 237, 242, .44); font-size: 8px; line-height: 1; }
+.dpad-arrow.up { top: 15px; left: 50%; transform: translateX(-50%); }
+.dpad-arrow.down { bottom: 15px; left: 50%; transform: translateX(-50%); }
+.dpad-arrow.left { left: 16px; top: 50%; transform: translateY(-50%); }
+.dpad-arrow.right { right: 16px; top: 50%; transform: translateY(-50%); }
+
+.touch-actions {
+  position: absolute; right: calc(13px + var(--safe-right) - var(--act-dx, 0px)); bottom: calc(15px + var(--safe-bottom) + var(--act-dy, 0px));
+  width: 236px; height: 224px; transform: scale(var(--touch-scale)); transform-origin: bottom right;
+  touch-action: none;
+}
+.tbtn {
+  position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  width: 68px; height: 68px; border-radius: 50%;
+  border: 1px solid rgba(229, 239, 243, .34);
+  background: radial-gradient(circle at 38% 30%, rgba(68, 91, 109, .65), rgba(12, 25, 42, .8));
+  box-shadow: 0 5px 18px rgba(0,0,0,.4), inset 0 1px rgba(255,255,255,.15);
+  color: rgba(241, 245, 246, .9); font-family: var(--font-display); font-size: 20px; font-weight: 600;
+  transition: transform .07s ease, background .1s;
+  touch-action: none; user-select: none;
+}
+.tbtn small { font-family: var(--font-ui); font-size: 6px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(218, 231, 238, .56); }
+.tbtn:active, .tbtn.pressed { transform: scale(.91); background: radial-gradient(circle at 38% 30%, rgba(199, 169, 96, .5), rgba(64, 47, 22, .8)); border-color: rgba(255, 231, 159, .68); }
+.tbtn-a { right: 4px; bottom: 63px; width: 78px; height: 78px; border-color: rgba(255, 226, 145, .42); }
+.tbtn-b { right: 82px; bottom: 132px; }
+.tbtn-x { right: 82px; bottom: -1px; }
+.tbtn-y { right: 160px; bottom: 63px; }
+.tbtn-a::after, .tbtn-b::after, .tbtn-x::after, .tbtn-y::after { content: ''; position: absolute; inset: 5px; border-radius: 50%; border: 1px solid rgba(255,255,255,.09); }
+.touch-shoulders { position: absolute; right: calc(18px + var(--safe-right)); bottom: calc(242px + var(--safe-bottom)); display: flex; gap: 8px; transform: scale(var(--touch-scale)); transform-origin: bottom right; }
+.touch-shoulders .tbtn.mini { position: relative; width: 44px; height: 34px; border-radius: 9px; font-size: 12px; gap: 0; }
+.tbtn.mini small { font-size: 5px; }
+.touch-system { position: absolute; right: calc(20px + var(--safe-right)); top: calc(196px + var(--safe-top)); display: flex; gap: 7px; transform: scale(var(--touch-scale)); transform-origin: top right; }
+.tbtn.system { position: relative; width: 37px; height: 37px; font-size: 14px; border-radius: 9px; gap: 0; color: #c6d2dd; background: rgba(8, 18, 32, .72); }
+.tbtn.system small { display: none; }
+
+@media (max-height: 530px) {
+  .hud-controls-hint { display: none; }
+  .joystick-zone { width: 144px; height: 144px; bottom: 8px; left: 13px; }
+  .joystick-knob { width: 49px; height: 49px; }
+  .touch-actions { transform: scale(calc(var(--touch-scale) * .86)); bottom: 4px; right: 8px; }
+  .touch-shoulders { bottom: calc(196px + var(--safe-bottom)); transform: scale(calc(var(--touch-scale) * .86)); }
+  .touch-system { top: calc(146px + var(--safe-top)); transform: scale(calc(var(--touch-scale) * .85)); }
+}
+body.left-handed .joystick-zone { left: auto; right: calc(19px + var(--safe-right)); transform-origin: bottom right; }
+body.left-handed .touch-actions { right: auto; left: calc(13px + var(--safe-left)); transform-origin: bottom left; }
+body.left-handed .touch-shoulders { right: auto; left: calc(18px + var(--safe-left)); transform-origin: bottom left; }
+body.left-handed .touch-system { right: auto; left: calc(20px + var(--safe-left)); transform-origin: top left; }
+body.touch-editing .joystick-zone, body.touch-editing .touch-actions, body.touch-editing .touch-shoulders, body.touch-editing .touch-system { outline: 1px dashed rgba(232,200,122,.55); outline-offset: 8px; }
+body.touch-editing .joystick-zone::after, body.touch-editing .touch-actions::after { content: 'ARRASTRA'; position: absolute; left: 50%; top: -18px; transform: translateX(-50%); color: var(--gold); font-size: 7px; letter-spacing: .2em; white-space: nowrap; }
