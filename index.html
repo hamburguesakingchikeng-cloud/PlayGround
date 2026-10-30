@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#080b16">
+  <meta name="description" content="La Espada Celestial: RPG Retro. Una aventura RPG de fantasía con combate, criaturas, misiones y guardado. Juega en Android, PC o tablet.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="color-scheme" content="dark">
+  <title>La Espada Celestial · RPG Retro</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="game" aria-label="Mundo de juego de La Espada Celestial"></canvas>
+  <div class="screen-fx" aria-hidden="true"></div>
+
+  <!-- ==================== HUD ==================== -->
+  <div id="hud" class="hidden" aria-live="polite">
+    <div class="hud-top-left">
+      <div class="portrait-frame">
+        <canvas id="hud-portrait" width="96" height="96"></canvas>
+        <span class="level-badge"><span id="hud-level">1</span></span>
+      </div>
+      <div class="vitals">
+        <div class="name-row">
+          <span id="hud-name">Aria</span>
+          <span id="hud-class">Caballero del Alba</span>
+        </div>
+        <div class="statbar hp"><i id="bar-hp"></i><span id="hud-hp-text">100 / 100</span></div>
+        <div class="statbar mp"><i id="bar-mp"></i><span id="hud-mp-text">40 / 40</span></div>
+        <div class="statbar st"><i id="bar-st"></i><span id="hud-st-text">100 / 100</span></div>
+        <div class="xpbar"><i id="bar-xp"></i></div>
+      </div>
+    </div>
+
+    <div class="hud-top-right">
+      <div class="minimap-frame">
+        <canvas id="minimap" width="240" height="160"></canvas>
+        <span id="hud-zone">Aldea del Alba</span>
+      </div>
+      <div class="hud-buttons">
+        <button class="icon-btn" data-action="pause" title="Pausa (Esc)" aria-label="Pausa"><span data-icon="pause"></span></button>
+        <button class="icon-btn" data-action="quick" title="Menú rápido (Tab)" aria-label="Menú rápido"><span data-icon="spark"></span></button>
+      </div>
+    </div>
+
+    <div class="hud-quest" id="quest-tracker">
+      <div class="quest-eyebrow">MISIÓN PRINCIPAL</div>
+      <div class="quest-name" id="quest-name">La Espada Celestial</div>
+      <div class="quest-objective" id="quest-objective">Habla con la Anciana Mira.</div>
+    </div>
+
+    <div class="hud-bottom-right">
+      <div class="currency" title="Oro"><span data-icon="gold"></span><span id="hud-gold">0</span></div>
+      <div class="hud-chips">
+        <button class="hud-chip" id="chip-weapon" data-action="weapon-cycle" title="Cambiar arma (Q)"></button>
+        <button class="hud-chip" id="chip-spell" data-action="spell-cycle" title="Cambiar hechizo (G)"></button>
+        <button class="hud-chip" id="chip-creature" data-action="creature-summon" title="Invocar criatura (R)"></button>
+      </div>
+    </div>
+
+    <div class="hud-combo hidden" id="hud-combo"><span id="combo-count">0</span><small>GOLPES</small></div>
+  </div>
+
+  <!-- ==================== CONTROLES TÁCTILES ==================== -->
+  <div id="touch-controls" class="hidden" aria-hidden="true">
+    <div id="joystick" class="joystick" data-drag="joystick">
+      <div class="joystick-ring"></div>
+      <div class="joystick-knob" id="joystick-knob"></div>
+    </div>
+
+    <button class="tbtn tbtn-a" data-touch="attack" data-drag="attack" aria-label="Atacar"><span class="tkey">A</span><span class="ticon" data-icon="sword"></span></button>
+    <button class="tbtn tbtn-b" data-touch="dodge" data-drag="dodge" aria-label="Esquivar"><span class="tkey">B</span><span class="ticon" data-icon="arrow"></span></button>
+    <button class="tbtn tbtn-x" data-touch="skill" data-drag="skill" aria-label="Habilidad"><span class="tkey">X</span><span class="ticon" data-icon="spark"></span></button>
+    <button class="tbtn tbtn-y" data-touch="interact" data-drag="interact" aria-label="Interactuar"><span class="tkey">Y</span><span class="ticon" data-icon="eye"></span></button>
+    <button class="tbtn tbtn-magic" data-touch="magic" data-drag="magic" aria-label="Magia"><span class="ticon" data-icon="fire"></span></button>
+    <button class="tbtn tbtn-block" data-touch="block" data-drag="block" aria-label="Bloquear"><span class="ticon" data-icon="shield"></span></button>
+    <button class="tbtn tbtn-weapon" data-touch="weapon" data-drag="weapon" aria-label="Cambiar arma"><span class="tkey">L</span></button>
+    <button class="tbtn tbtn-creature" data-touch="creature" data-drag="creature" aria-label="Criatura"><span class="tkey">R</span></button>
+    <button class="tbtn tbtn-potion" data-touch="potion" data-drag="potion" aria-label="Poción"><span class="ticon" data-icon="potion"></span></button>
+    <button class="tbtn tbtn-pause" data-action="pause" data-drag="pause" aria-label="Pausa"><span class="ticon" data-icon="pause"></span></button>
+    <button class="tbtn tbtn-quick" data-action="quick" data-drag="quick" aria-label="Menú rápido"><span class="ticon" data-icon="bag"></span></button>
+  </div>
+
+  <!-- ==================== TÍTULO ==================== -->
+  <section id="screen-title" class="screen title-screen">
+    <div class="title-cinematic-bars" aria-hidden="true"></div>
+    <div class="title-content">
+      <div class="title-eyebrow">UNA AVENTURA DE AURELIA</div>
+      <h1 class="game-logo">
+        <span class="logo-small">LA ESPADA</span>
+        <span class="logo-main">CELESTIAL</span>
+        <span class="logo-sub">RPG RETRO</span>
+      </h1>
+      <p class="title-tagline">Tres fragmentos. Un juramento. El último amanecer.</p>
+      <nav class="title-menu" aria-label="Menú principal">
+        <button class="btn btn-primary" data-action="continue" id="btn-continue"><span data-icon="play"></span><span><b>Continuar</b><small id="continue-sub">Sin partida guardada</small></span></button>
+        <button class="btn" data-action="new-game"><span data-icon="spark"></span><span><b>Nueva partida</b><small>Forja tu leyenda</small></span></button>
+        <button class="btn" data-action="load-menu"><span data-icon="save"></span><span><b>Cargar partida</b><small>Tres ranuras y autoguardado</small></span></button>
+        <button class="btn btn-ghost" data-action="settings" data-from="title"><span data-icon="settings"></span><span><b>Ajustes</b><small>Audio, controles y pantalla</small></span></button>
+        <button class="btn btn-ghost" data-action="how-to"><span data-icon="book"></span><span><b>Cómo jugar</b><small>Controles y consejos</small></span></button>
+        <button class="btn btn-ghost" data-action="credits"><span data-icon="star"></span><span><b>Créditos</b><small>La orden del Alba</small></span></button>
+      </nav>
+      <div class="title-footer">
+        <span>v1.0 · Original · Sin recursos externos</span>
+        <span class="title-audio"><button class="icon-btn" data-action="toggle-audio" aria-label="Silenciar"><span data-icon="mana"></span></button><button class="icon-btn" data-action="fullscreen" aria-label="Pantalla completa"><span data-icon="map"></span></button></span>
+      </div>
+    </div>
+    <div class="title-side-note">Mejor con auriculares · Guardado local · Android horizontal y PC</div>
+  </section>
+
+  <!-- ==================== CREACIÓN DE PERSONAJE ==================== -->
+  <section id="screen-create" class="screen create-screen hidden">
+    <header class="create-header">
+      <div>
+        <div class="eyebrow">FORJA TU LEYENDA</div>
+        <h2>Elige tu juramento</h2>
+      </div>
+      <button class="btn btn-ghost btn-sm" data-action="back-title"><span data-icon="arrow"></span> Volver</button>
+    </header>
+    <div class="create-layout">
+      <aside class="create-preview">
+        <div class="preview-glow"></div>
+        <canvas id="create-portrait" width="220" height="260"></canvas>
+        <div class="preview-name" id="preview-name">Aria</div>
+        <div class="preview-class" id="preview-class">Caballero del Alba</div>
+        <div class="preview-tag" id="preview-tag">Equilibrado · Espada</div>
+        <div class="preview-weapon" id="preview-weapon"></div>
+      </aside>
+      <div class="create-panel">
+        <div class="field">
+          <label for="create-name">Nombre del héroe</label>
+          <div class="input-row">
+            <input id="create-name" type="text" maxlength="16" autocomplete="off" spellcheck="false" value="Aria" aria-label="Nombre del héroe">
+            <button class="icon-btn" data-action="random-name" title="Nombre aleatorio" aria-label="Nombre aleatorio"><span data-icon="swap"></span></button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Clase</label>
+          <div class="class-cards" id="class-cards"></div>
+        </div>
+
+        <div class="field">
+          <label>Apariencia</label>
+          <div class="appearance-block">
+            <div class="appearance-row">
+              <span>Peinado</span>
+              <div class="swatch-row" id="hair-styles"></div>
+            </div>
+            <div class="appearance-row">
+              <span>Cabello</span>
+              <div class="swatch-row" id="hair-colors"></div>
+            </div>
+            <div class="appearance-row">
+              <span>Piel</span>
+              <div class="swatch-row" id="skin-colors"></div>
+            </div>
+            <div class="appearance-row">
+              <span>Vestimenta</span>
+              <div class="swatch-row" id="outfit-colors"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="create-stats" id="create-stats"></div>
+      </div>
+    </div>
+    <footer class="create-footer">
+      <div class="create-hint"><span data-icon="star"></span> El equipo se refleja en tu personaje. Las decisiones pueden cambiarse durante la aventura.</div>
+      <button class="btn btn-primary btn-lg" data-action="start-game"><span data-icon="sword"></span> Comenzar la aventura</button>
+    </footer>
+  </section>
+
+  <!-- ==================== PAUSA / MENÚ ==================== -->
+  <section id="screen-pause" class="screen modal-screen hidden">
+    <div class="pause-shell">
+      <aside class="pause-sidebar">
+        <div class="pause-brand">
+          <span class="brand-mark" data-icon="celestial"></span>
+          <div><b>LA ESPADA CELESTIAL</b><small>Diario de aventura</small></div>
+        </div>
+        <nav id="pause-nav" aria-label="Menú de pausa">
+          <button class="pause-tab active" data-action="pause-tab" data-tab="summary"><span data-icon="eye"></span> Resumen</button>
+          <button class="pause-tab" data-action="pause-tab" data-tab="inventory"><span data-icon="bag"></span> Inventario</button>
+          <button class="pause-tab" data-action="pause-tab" data-tab="equipment"><span data-icon="sword"></span> Equipo</button>
+          <button class="pause-tab" data-action="pause-tab" data-tab="skills"><span data-icon="spark"></span> Habilidades</button>
+          <button class="pause-tab" data-action="pause-tab" data-tab="creatures"><span data-icon="slime"></span> Criaturas</button>
+          <button class="pause-tab" data-action="pause-tab" data-tab="quests"><span data-icon="quest"></span> Misiones</button>
+          <button class="pause-tab" data-action="pause-tab" data-tab="settings"><span data-icon="settings"></span> Ajustes</button>
+          <button class="pause-tab" data-action="pause-tab" data-tab="save"><span data-icon="save"></span> Guardar</button>
+        </nav>
+        <div class="pause-sidebar-footer">
+          <button class="btn btn-ghost btn-sm" data-action="resume"><span data-icon="play"></span> Continuar</button>
+          <button class="btn btn-ghost btn-sm" data-action="quit-title"><span data-icon="close"></span> Salir al título</button>
+        </div>
+      </aside>
+      <section class="pause-main">
+        <header class="pause-header">
+          <div>
+            <div class="eyebrow" id="pause-eyebrow">DIARIO</div>
+            <h2 id="pause-title">Resumen</h2>
+          </div>
+          <button class="icon-btn" data-action="resume" aria-label="Cerrar menú"><span data-icon="close"></span></button>
+        </header>
+        <div id="pause-content" class="pause-content"></div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ==================== TIENDA ==================== -->
+  <section id="screen-shop" class="screen modal-screen hidden">
+    <div class="shop-shell">
+      <header class="shop-header">
+        <div class="shop-keeper">
+          <div class="keeper-orb" data-icon="bag"></div>
+          <div>
+            <div class="eyebrow" id="shop-eyebrow">MERCADO</div>
+            <h2 id="shop-title">Sela, la mercader</h2>
+            <p id="shop-subtitle">«Lo que necesitas, lo tengo. Lo que no, lo consigo.»</p>
+          </div>
+        </div>
+        <div class="shop-actions">
+          <div class="currency large"><span data-icon="gold"></span><span id="shop-gold">0</span></div>
+          <button class="icon-btn" data-action="close-shop" aria-label="Cerrar tienda"><span data-icon="close"></span></button>
+        </div>
+      </header>
+      <div class="shop-tabs" id="shop-tabs">
+        <button class="shop-tab active" data-action="shop-tab" data-tab="buy">Comprar</button>
+        <button class="shop-tab" data-action="shop-tab" data-tab="sell">Vender</button>
+        <button class="shop-tab" data-action="shop-tab" data-tab="forge" id="forge-tab">Forja</button>
+      </div>
+      <div class="shop-body">
+        <div class="shop-list" id="shop-list"></div>
+        <aside class="shop-detail" id="shop-detail"></aside>
+      </div>
+      <footer class="shop-footer">
+        <span id="shop-hint">Selecciona un objeto para ver sus detalles.</span>
+        <button class="btn btn-primary btn-sm" data-action="close-shop">Terminar</button>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ==================== MENÚ RÁPIDO ==================== -->
+  <section id="screen-quick" class="screen modal-screen hidden">
+    <div class="quick-shell">
+      <header class="quick-header">
+        <div><div class="eyebrow">ACCESO RÁPIDO</div><h2>Preparado para el combate</h2></div>
+        <button class="icon-btn" data-action="close-quick" aria-label="Cerrar"><span data-icon="close"></span></button>
+      </header>
+      <div class="quick-grid" id="quick-grid"></div>
+      <footer class="quick-footer">
+        <span>Tab / Select abre este menú. Los atajos 1-4 lanzan hechizos.</span>
+        <button class="btn btn-primary btn-sm" data-action="close-quick">Volver</button>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ==================== MODAL GENÉRICO ==================== -->
+  <section id="screen-modal" class="screen modal-screen hidden">
+    <div class="generic-modal">
+      <header class="generic-header">
+        <div><div class="eyebrow" id="modal-eyebrow">AURELIA</div><h2 id="modal-title">Título</h2></div>
+        <button class="icon-btn" data-action="close-modal" aria-label="Cerrar"><span data-icon="close"></span></button>
+      </header>
+      <div class="generic-body" id="modal-body"></div>
+      <footer class="generic-footer" id="modal-footer"></footer>
+    </div>
+  </section>
+
+  <!-- ==================== DIÁLOGO ==================== -->
+  <div id="dialogue" class="dialogue hidden" role="dialog" aria-live="polite">
+    <div class="dialogue-portrait"><canvas id="dialogue-portrait" width="120" height="120"></canvas><span class="dialogue-rune" data-icon="star"></span></div>
+    <div class="dialogue-main">
+      <div class="dialogue-top"><span class="dialogue-name" id="dialogue-name">Anciana Mira</span><span class="dialogue-title" id="dialogue-title">Custodia del Alba</span></div>
+      <div class="dialogue-text" id="dialogue-text"></div>
+      <div class="dialogue-choices" id="dialogue-choices"></div>
+      <div class="dialogue-hint" id="dialogue-hint"><span data-icon="chevron"></span> Y / Espacio para continuar</div>
+    </div>
+  </div>
+
+  <!-- ==================== FIN DE PARTIDA ==================== -->
+  <section id="screen-gameover" class="screen gameover-screen hidden">
+    <div class="gameover-content">
+      <div class="gameover-rune" data-icon="skull"></div>
+      <div class="eyebrow">LA LUZ SE APAGA</div>
+      <h2>Has caído</h2>
+      <p id="gameover-text">Pero el amanecer aún puede encontrarte.</p>
+      <div class="gameover-stats" id="gameover-stats"></div>
+      <div class="gameover-actions">
+        <button class="btn btn-primary" data-action="respawn"><span data-icon="heal"></span> Reaparecer en el santuario</button>
+        <button class="btn" data-action="load-menu" data-from="gameover"><span data-icon="save"></span> Cargar partida</button>
+        <button class="btn btn-ghost" data-action="quit-title"><span data-icon="close"></span> Volver al título</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FINAL ==================== -->
+  <section id="screen-ending" class="screen ending-screen hidden">
+    <div class="ending-content">
+      <div class="ending-halo" aria-hidden="true"></div>
+      <div class="ending-sword" data-icon="celestial"></div>
+      <div class="eyebrow">EL ÚLTIMO AMANECER</div>
+      <h2>La Espada Celestial</h2>
+      <p class="ending-quote">«No fue la espada quien venció a la noche.<br>Fue el juramento de no dejar de amanecer.»</p>
+      <div class="ending-stats" id="ending-stats"></div>
+      <div class="ending-actions">
+        <button class="btn btn-primary" data-action="ending-continue"><span data-icon="play"></span> Seguir explorando</button>
+        <button class="btn" data-action="ending-credits"><span data-icon="star"></span> Ver créditos</button>
+        <button class="btn btn-ghost" data-action="quit-title"><span data-icon="close"></span> Volver al título</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CINEMÁTICA ==================== -->
+  <div id="cinematic" class="cinematic hidden" role="dialog" aria-live="polite">
+    <div class="cine-bars top"></div>
+    <div class="cine-content">
+      <div class="cine-chapter" id="cine-chapter">PRÓLOGO</div>
+      <h2 id="cine-title">El cielo se rompió</h2>
+      <p id="cine-text"></p>
+      <div class="cine-progress" id="cine-progress"></div>
+      <button class="btn btn-ghost btn-sm" id="cine-next" data-action="cine-next">Continuar <span data-icon="chevron"></span></button>
+      <button class="cine-skip" data-action="cine-skip">Saltar <span data-icon="chevron"></span></button>
+    </div>
+    <div class="cine-bars bottom"></div>
+  </div>
+
+  <!-- ==================== EXTRAS ==================== -->
+  <div id="zone-banner" class="zone-banner hidden">
+    <div class="zone-line"></div>
+    <div class="zone-name" id="zone-name">Aldea del Alba</div>
+    <div class="zone-sub" id="zone-sub">Donde despierta la luz</div>
+    <div class="zone-line"></div>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="assertive"></div>
+  <div id="interaction-prompt" class="interaction-prompt hidden"></div>
+  <div id="fade" class="fade"></div>
+  <div id="rotate-hint" class="rotate-hint hidden">
+    <div class="rotate-icon" data-icon="swap"></div>
+    <h2>Gira tu dispositivo</h2>
+    <p>La Espada Celestial se juega en horizontal.</p>
+  </div>
+  <div id="touch-editor-bar" class="touch-editor-bar hidden">
+    <span><b>Edita tus controles</b> · Arrastra los botones y el joystick</span>
+    <button class="btn btn-sm" data-action="touch-reset">Restablecer</button>
+    <button class="btn btn-primary btn-sm" data-action="touch-editor-done">Listo</button>
+  </div>
+  <div id="loading" class="loading hidden"><div class="loading-rune" data-icon="celestial"></div><span>Cargando Aurelia…</span></div>
+  <div id="debug-badge" class="debug-badge hidden">DEV</div>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

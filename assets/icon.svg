@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="La Espada Celestial">
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="38%" r="72%">
+      <stop offset="0" stop-color="#26365f"/>
+      <stop offset="0.55" stop-color="#111a31"/>
+      <stop offset="1" stop-color="#05080f"/>
+    </radialGradient>
+    <linearGradient id="blade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf2"/>
+      <stop offset="0.45" stop-color="#ffe6a0"/>
+      <stop offset="1" stop-color="#c9a25a"/>
+    </linearGradient>
+    <linearGradient id="guard" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe6a0"/>
+      <stop offset="1" stop-color="#9a7434"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fff3c4" stop-opacity="0.6"/>
+      <stop offset="0.55" stop-color="#9fe3ff" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#9fe3ff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="7" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#sky)"/>
+  <circle cx="256" cy="248" r="196" fill="none" stroke="#e8c56a" stroke-opacity="0.18" stroke-width="3"/>
+  <circle cx="256" cy="248" r="170" fill="none" stroke="#9fe3ff" stroke-opacity="0.12" stroke-width="1.5" stroke-dasharray="3 12"/>
+  <circle cx="256" cy="244" r="156" fill="url(#halo)"/>
+  <g opacity="0.85">
+    <circle cx="112" cy="120" r="3.2" fill="#fff3c4"/>
+    <circle cx="408" cy="146" r="2.4" fill="#9fe3ff"/>
+    <circle cx="382" cy="368" r="2.8" fill="#ffe6a0"/>
+    <circle cx="132" cy="358" r="2" fill="#c9d8ff"/>
+    <path d="M96 252l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#9fe3ff" opacity="0.7"/>
+    <path d="M418 268l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#ffe6a0" opacity="0.7"/>
+  </g>
+  <g filter="url(#glow)">
+    <path d="M256 74l20 34v186h-40V108z" fill="url(#blade)"/>
+    <path d="M256 74l20 34v186h-20z" fill="#c9a25a" opacity="0.28"/>
+    <path d="M236 294h40l-20 34z" fill="#e8c56a"/>
+    <rect x="174" y="292" width="164" height="22" rx="11" fill="url(#guard)"/>
+    <rect x="242" y="314" width="28" height="92" rx="12" fill="#6b4a2a"/>
+    <path d="M242 328h28M242 350h28M242 372h28" stroke="#e8c56a" stroke-width="3" opacity="0.6"/>
+    <circle cx="256" cy="420" r="18" fill="#e8c56a"/>
+    <circle cx="256" cy="420" r="9" fill="#fff3c4"/>
+    <path d="M256 236l8 18 18 8-18 8-8 18-8-18-18-8 18-8z" fill="#fffdf2" opacity="0.95"/>
+  </g>
+  <path d="M164 452h184" stroke="#e8c56a" stroke-opacity="0.3" stroke-width="2"/>
+  <text x="256" y="482" text-anchor="middle" font-family="Georgia, serif" font-size="20" letter-spacing="6" fill="#e8c56a" opacity="0.82">AURELIA</text>
+</svg>
