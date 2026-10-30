@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0c101c">
+  <meta name="description" content="La Espada Celestial: RPG Retro. Una aventura de fantasía para navegador, con controles táctiles y mando.">
+  <title>La Espada Celestial · RPG Retro</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <canvas id="game" aria-label="Mundo de La Espada Celestial"></canvas>
+    <div id="vignette"></div>
+    <div id="grain"></div>
+    <div id="flash-layer"></div>
+
+    <div id="hud" class="hidden" aria-live="polite">
+      <div class="hud-left">
+        <div class="portrait-block">
+          <div class="portrait-frame">
+            <canvas id="hud-portrait" width="128" height="128"></canvas>
+            <span id="hud-level">1</span>
+          </div>
+          <div class="hud-bars">
+            <div class="hud-name-row">
+              <span id="hud-name">Aria</span>
+              <span id="hud-difficulty" class="hud-diff">Aventura</span>
+            </div>
+            <div class="bar hp"><div id="hp-fill" class="fill"></div><span id="hp-text">120 / 120</span></div>
+            <div class="bar mp"><div id="mp-fill" class="fill"></div><span id="mp-text">42 / 42</span></div>
+            <div class="bar sta"><div id="sta-fill" class="fill"></div><span id="sta-text">100</span></div>
+            <div class="hud-xp"><div id="xp-fill"></div><span id="xp-text">Nv. 1 · 0 / 38</span></div>
+          </div>
+        </div>
+        <div class="hud-chips">
+          <span class="chip" id="chip-weapon">Espada del Alba</span>
+          <span class="chip" id="chip-skill">Corte Celestial</span>
+          <span class="chip" id="chip-creature">Sin criatura</span>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <div class="minimap-shell">
+          <canvas id="minimap" width="180" height="140"></canvas>
+          <div class="minimap-label"><span id="zone-name">Vado Lirio</span><span id="clock-label">Crepúsculo</span></div>
+        </div>
+        <div class="quest-card" id="quest-card">
+          <div class="quest-kicker">Misión principal</div>
+          <div class="quest-title" id="quest-title">El cielo roto</div>
+          <div class="quest-desc" id="quest-desc">Habla con la Anciana Lyss.</div>
+          <div class="quest-progress" id="quest-progress"></div>
+        </div>
+      </div>
+
+      <div id="boss-bar" class="boss-bar hidden">
+        <div class="boss-head"><span id="boss-title">Guardián del Alba</span><span id="boss-phase">Fase I</span></div>
+        <div class="boss-track"><div id="boss-fill"></div></div>
+      </div>
+
+      <div id="interact-prompt" class="interact-prompt hidden"><span class="keycap">Y</span><span id="interact-text">Interactuar</span></div>
+      <div id="combo-indicator" class="combo-indicator"></div>
+      <div id="hud-hint" class="hud-hint">WASD mover · J atacar · K esquivar · E interactuar · Esc menú</div>
+    </div>
+
+    <div id="toast-layer" class="toast-layer"></div>
+
+    <div id="dialogue" class="dialogue hidden" role="dialog" aria-modal="true">
+      <div class="dialogue-ornament"></div>
+      <div class="dialogue-portrait"><canvas id="dialogue-portrait" width="220" height="220"></canvas></div>
+      <div class="dialogue-main">
+        <div id="dialogue-name" class="dialogue-name">Anciana Lyss</div>
+        <div id="dialogue-text" class="dialogue-text"></div>
+        <div id="dialogue-hint" class="dialogue-hint"><span class="keycap">Y</span> continuar</div>
+      </div>
+      <div id="dialogue-choices" class="dialogue-choices"></div>
+    </div>
+
+    <div id="overlay-root"></div>
+
+    <div id="touch-controls" class="touch-controls hidden">
+      <div id="touch-dpad" class="touch-cluster dpad-cluster" aria-label="Cruceta virtual">
+        <button class="dpad-btn up" data-touch-dir="up" aria-label="Arriba">▲</button>
+        <button class="dpad-btn down" data-touch-dir="down" aria-label="Abajo">▼</button>
+        <button class="dpad-btn left" data-touch-dir="left" aria-label="Izquierda">◀</button>
+        <button class="dpad-btn right" data-touch-dir="right" aria-label="Derecha">▶</button>
+        <div class="dpad-core"></div>
+      </div>
+      <div id="touch-actions" class="touch-cluster action-cluster">
+        <button class="tbtn lbtn" data-touch-action="switchWeapon" aria-label="Cambiar arma">L</button>
+        <button class="tbtn rbtn" data-touch-action="creature" aria-label="Invocar criatura">R</button>
+        <button class="tbtn ybtn" data-touch-action="interact" aria-label="Interactuar">Y</button>
+        <button class="tbtn xbtn" data-touch-action="skill" aria-label="Habilidad especial">X</button>
+        <button class="tbtn bbtn" data-touch-action="dodge" aria-label="Esquivar o bloquear">B</button>
+        <button class="tbtn abtn" data-touch-action="attack" aria-label="Atacar">A</button>
+        <button class="tbtn potionbtn" data-touch-action="potion" aria-label="Usar poción">✚</button>
+      </div>
+      <button id="touch-pause" class="touch-pause" data-touch-action="pause" aria-label="Pausa">☰</button>
+    </div>
+
+    <div id="rotate-hint" class="rotate-hint hidden">
+      <div class="rotate-icon">▭</div>
+      <strong>Gira el dispositivo</strong>
+      <span>La Espada Celestial se juega en horizontal.</span>
+    </div>
+
+    <div id="area-banner" class="area-banner"><span id="area-chapter">Capítulo I</span><h2 id="area-title">Vado Lirio</h2><p id="area-subtitle">Donde siempre queda una luz encendida</p></div>
+
+    <div id="fps" class="fps hidden">60 FPS</div>
+
+    <div id="title-screen" class="title-screen">
+      <div class="title-sigil" aria-hidden="true"></div>
+      <div class="title-topline"><span>Un RPG de fantasía</span><span class="dot"></span><span>Lumen, año 1042</span></div>
+      <div class="title-logo">
+        <div class="title-eyebrow">La leyenda del alba quebrada</div>
+        <h1><span>LA ESPADA</span><strong>CELESTIAL</strong></h1>
+        <div class="title-sub"><span></span><b>RPG RETRO</b><span></span></div>
+      </div>
+      <div class="title-menu" role="menu">
+        <button class="menu-btn primary" data-title-action="new" role="menuitem">Nueva partida</button>
+        <button class="menu-btn" data-title-action="continue" role="menuitem">Continuar</button>
+        <button class="menu-btn" data-title-action="load" role="menuitem">Cargar partida</button>
+        <button class="menu-btn" data-title-action="how" role="menuitem">Cómo jugar</button>
+        <button class="menu-btn" data-title-action="settings" role="menuitem">Ajustes</button>
+        <button class="menu-btn subtle" data-title-action="credits" role="menuitem">Créditos</button>
+      </div>
+      <div class="title-footer">
+        <span>Canvas 2D · Web Audio · Guardado local</span>
+        <span class="title-controls">Mando · Teclado · Táctil</span>
+      </div>
+      <div id="title-save-note" class="title-save-note">No hay partidas guardadas todavía</div>
+    </div>
+
+    <div id="boot-screen" class="boot-screen">
+      <div class="boot-rune"></div>
+      <div class="boot-title">LA ESPADA CELESTIAL</div>
+      <div class="boot-text">Invocando el reino de Lumen…</div>
+    </div>
+  </div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
