@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1018" />
+  <meta name="description" content="LA ESPADA CELESTIAL: un RPG de acción original de fantasía épica. Explora Valdoria, Drakmore y Kansordore, domina el combate y resuena con criaturas legendarias." />
+  <title>LA ESPADA CELESTIAL — RPG de fantasía épica</title>
+  <script type="module" crossorigin src="./assets/index--Wp_7aSK.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-cQLRgt1T.css">
+</head>
+<body>
+  <div id="app">
+    <canvas id="game-canvas" aria-label="Mundo tridimensional de La Espada Celestial"></canvas>
+    <div class="screen-shade" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <section id="loading-screen" class="screen is-active loading-screen">
+      <div class="loading-sigil">
+        <span class="sigil-ring ring-a"></span>
+        <span class="sigil-ring ring-b"></span>
+        <span class="sigil-core"></span>
+      </div>
+      <p class="eyebrow">LA ESPADA CELESTIAL</p>
+      <p class="loading-copy">Tejiendo el Velo…</p>
+      <div class="loading-track"><i id="loading-bar"></i></div>
+      <p id="loading-detail" class="loading-detail">Despertando la Gema</p>
+    </section>
+
+    <section id="title-screen" class="screen title-screen">
+      <div class="title-top">
+        <span class="title-mark">✦</span>
+        <span>UNA LEYENDA ORIGINAL</span>
+      </div>
+      <div class="title-lockup">
+        <p class="title-kicker">EL VELO SE RASGA</p>
+        <h1>LA ESPADA<br /><em>CELESTIAL</em></h1>
+        <div class="title-rule"><span></span><i>✦</i><span></span></div>
+        <p class="title-sub">Un RPG de acción sobre la luz que queda cuando todo se rompe.</p>
+      </div>
+      <nav class="title-menu" aria-label="Menú principal">
+        <button id="btn-new" class="menu-btn primary"><span class="menu-index">I</span><span><b>Nueva partida</b><small>Forja tu leyenda desde el principio</small></span><i>›</i></button>
+        <button id="btn-continue" class="menu-btn"><span class="menu-index">II</span><span><b>Continuar</b><small id="continue-detail">No hay una partida guardada</small></span><i>›</i></button>
+        <button id="btn-how" class="menu-btn"><span class="menu-index">III</span><span><b>Cómo jugar</b><small>Controles, resonancia y supervivencia</small></span><i>›</i></button>
+        <button id="btn-credits" class="menu-btn"><span class="menu-index">IV</span><span><b>Créditos</b><small>El equipo detrás del Velo</small></span><i>›</i></button>
+      </nav>
+      <div class="title-footer">
+        <span>VERSIÓN 0.9 · PROTOTIPO JUGABLE</span>
+        <span class="title-footer-mid">VALDORIA · DRAKMORE · KANSORDORE</span>
+        <span>ESPAÑOL (ES)</span>
+      </div>
+      <div class="title-aside">
+        <span class="aside-line"></span>
+        <p>“No fuiste elegido.<br />Fuiste la excepción.”</p>
+        <small>— Profecía de Jugador Cero</small>
+      </div>
+    </section>
+
+    <section id="creator-screen" class="screen creator-screen" aria-label="Creación de personaje">
+      <header class="creator-head">
+        <div>
+          <p class="eyebrow">FORJA TU DESTINO</p>
+          <h2>El que empuñará la Espada</h2>
+        </div>
+        <button id="creator-back" class="ghost-btn" aria-label="Volver al menú">← Volver</button>
+      </header>
+      <div class="creator-grid">
+        <div class="creator-form">
+          <div class="form-section">
+            <label class="field-label" for="hero-name">Nombre del portador</label>
+            <input id="hero-name" class="name-input" maxlength="18" value="Aster" autocomplete="off" spellcheck="false" />
+          </div>
+          <div class="form-section">
+            <p class="field-label">Origen</p>
+            <div id="origin-list" class="origin-list"></div>
+          </div>
+          <div class="form-section appearance-section">
+            <p class="field-label">Apariencia</p>
+            <div class="appearance-row">
+              <span class="appearance-label">Cabello</span>
+              <div id="hair-style-list" class="chip-list"></div>
+            </div>
+            <div class="appearance-row">
+              <span class="appearance-label">Tono</span>
+              <div id="hair-color-list" class="swatch-list"></div>
+            </div>
+            <div class="appearance-row">
+              <span class="appearance-label">Piel</span>
+              <div id="skin-color-list" class="swatch-list"></div>
+            </div>
+            <div class="appearance-row">
+              <span class="appearance-label">Armadura</span>
+              <div id="outfit-list" class="chip-list"></div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="attr-head"><p class="field-label">Atributos</p><span id="points-left" class="points-left">6 puntos libres</span></div>
+            <div id="attribute-list" class="attribute-list"></div>
+          </div>
+        </div>
+        <aside class="creator-preview">
+          <div class="preview-stage">
+            <canvas id="creator-canvas" width="420" height="560" aria-label="Vista previa del personaje"></canvas>
+            <div class="preview-glow"></div>
+            <span class="preview-rune rune-one">✦</span>
+            <span class="preview-rune rune-two">◇</span>
+            <p class="preview-caption">EL PORTADOR DEL ALBA</p>
+          </div>
+          <div class="preview-card">
+            <div class="preview-title-row">
+              <div><span id="preview-origin">Vanguardia de Valdoria</span><h3 id="preview-name">Aster</h3></div>
+              <span id="preview-level" class="level-gem">Nv. 1</span>
+            </div>
+            <div id="derived-stats" class="derived-stats"></div>
+            <div id="preview-perk" class="preview-perk"></div>
+          </div>
+          <button id="btn-create" class="forge-btn"><span>FORJAR MI DESTINO</span><small>El Velo te espera</small></button>
+        </aside>
+      </div>
+    </section>
+
+    <section id="intro-screen" class="screen intro-screen" aria-label="Introducción">
+      <div class="intro-bars"><span></span><span></span></div>
+      <div class="intro-content">
+        <p id="intro-kicker" class="eyebrow">HACE MIL AÑOS</p>
+        <h2 id="intro-title">La Gema no se rompió.</h2>
+        <p id="intro-text">La rompieron.</p>
+        <div class="intro-progress" id="intro-progress"></div>
+      </div>
+      <button id="intro-next" class="intro-next">Continuar <span>›</span></button>
+      <button id="intro-skip" class="intro-skip">Saltar introducción</button>
+    </section>
+
+    <div id="hud" class="hud" aria-live="polite">
+      <div class="hud-top-left">
+        <div class="player-plate">
+          <div class="portrait-medallion">
+            <div id="hud-portrait" class="hud-portrait"></div>
+            <span id="hud-level" class="hud-level">1</span>
+          </div>
+          <div class="player-vitals">
+            <div class="player-name-row"><strong id="hud-name">Aster</strong><span id="hud-origin">Vanguardia</span></div>
+            <div class="bar hp-bar"><i id="hp-fill"></i><span id="hp-text">120 / 120</span></div>
+            <div class="bar-row">
+              <div class="bar stamina-bar"><i id="stamina-fill"></i></div>
+              <div class="bar mana-bar"><i id="mana-fill"></i></div>
+            </div>
+            <div class="xp-bar"><i id="xp-fill"></i><span id="xp-text">Nv. 1</span></div>
+          </div>
+        </div>
+        <div class="quest-card">
+          <span class="quest-eyebrow">✦ MISIÓN PRINCIPAL</span>
+          <p id="quest-title">La llamada de la Aurora</p>
+          <small id="quest-objective">Habla con Lira junto al santuario.</small>
+          <div class="quest-progress"><i id="quest-fill"></i></div>
+        </div>
+      </div>
+
+      <div class="compass-wrap">
+        <div class="compass">
+          <span>O</span><span>NO</span><span>N</span><span>NE</span><span>E</span><span>SE</span><span>S</span><span>SO</span>
+        </div>
+        <span class="compass-pointer"></span>
+      </div>
+
+      <div class="hud-top-right">
+        <div class="region-chip"><span class="region-dot"></span><div><strong id="region-name">VALDORIA</strong><small id="region-subtitle">El Jardín de la Aurora</small></div></div>
+        <div class="minimap-frame">
+          <canvas id="minimap" width="240" height="240"></canvas>
+          <div class="minimap-ring"></div>
+          <span class="minimap-n">N</span>
+          <div id="minimap-label" class="minimap-label">Santuario de la Aurora</div>
+        </div>
+        <div class="clock-chip"><span id="clock-icon">☀</span><span id="clock-text">Hora del Alba</span></div>
+      </div>
+
+      <div id="target-wrap" class="target-wrap">
+        <div class="target-name-row"><span id="target-level">Nv. 2</span><strong id="target-name">Corrupto</strong><span id="target-element">Sombra</span></div>
+        <div class="target-bar"><i id="target-fill"></i></div>
+      </div>
+
+      <div id="boss-wrap" class="boss-wrap">
+        <div class="boss-title"><span id="boss-epithet">GUARDIÁN DE LA GRIETA</span><h3 id="boss-name">Centinela de Ceniza</h3></div>
+        <div class="boss-bar"><i id="boss-fill"></i><b id="boss-phase"></b></div>
+        <div id="boss-cast" class="boss-cast"></div>
+      </div>
+
+      <div class="hud-bottom-left">
+        <div id="companion-card" class="companion-card is-empty">
+          <div class="companion-orb" id="companion-orb">◇</div>
+          <div><span>VÍNCULO DE RESONANCIA</span><strong id="companion-name">Sin criatura</strong><small id="companion-detail">Resuena con un eco salvaje</small></div>
+          <div id="companion-cooldown" class="companion-cooldown"></div>
+        </div>
+        <div id="potion-chip" class="potion-chip"><span class="potion-icon">◈</span><div><strong>Elixir de Aurora</strong><small id="potion-count">×3 · Pulsa H</small></div></div>
+      </div>
+
+      <div class="hud-bottom-right">
+        <div id="ability-cluster" class="ability-cluster">
+          <button class="ability-btn attack-btn" data-action="attack" aria-label="Ataque ligero"><span class="ability-icon">⚔</span><small>ATACAR</small></button>
+          <button class="ability-btn heavy-btn" data-action="heavy" aria-label="Ataque pesado"><span class="ability-icon">✦</span><small>RUPTURA</small></button>
+          <button class="ability-btn dodge-btn" data-action="dodge" aria-label="Esquivar"><span class="ability-icon">➜</span><small>ESQUIVAR</small></button>
+          <button class="ability-btn block-btn" data-action="block" aria-label="Bloquear"><span class="ability-icon">◈</span><small>BLOQUEAR</small></button>
+          <button class="ability-btn resonance-btn" data-action="resonance" aria-label="Resonar"><span class="ability-icon">◉</span><small>RESONAR</small></button>
+          <button class="ability-btn companion-btn" data-action="companion" aria-label="Invocar criatura"><span class="ability-icon">❖</span><small>VÍNCULO</small></button>
+        </div>
+      </div>
+
+      <div id="interact-prompt" class="interact-prompt"><kbd>E</kbd><span id="interact-text">Hablar</span></div>
+      <div id="resonance-ring" class="resonance-ring">
+        <svg viewBox="0 0 100 100"><circle class="resonance-track" cx="50" cy="50" r="44"></circle><circle id="resonance-progress" class="resonance-fill" cx="50" cy="50" r="44"></circle></svg>
+        <span>RESONANDO</span>
+      </div>
+      <div id="subtitle" class="subtitle"></div>
+      <div id="damage-layer" class="damage-layer"></div>
+      <div id="controls-hint" class="controls-hint">
+        <span><kbd>WASD</kbd> moverse</span><span><kbd>Espacio</kbd> esquivar</span><span><kbd>E</kbd> interactuar</span><span><kbd>Tab</kbd> diario</span>
+      </div>
+      <div id="toast-layer" class="toast-layer"></div>
+      <div id="region-banner" class="region-banner"><span id="region-banner-kicker">REGIÓN I</span><h2 id="region-banner-name">VALDORIA</h2><p id="region-banner-sub">El Jardín de la Aurora</p></div>
+    </div>
+
+    <div id="mobile-controls" class="mobile-controls" aria-hidden="true">
+      <div id="joystick-zone" class="joystick-zone"><div class="joystick-base"><div id="joystick-knob" class="joystick-knob"></div></div></div>
+      <div class="touch-actions">
+        <button class="touch-btn touch-attack" data-action="attack">⚔<span>Atacar</span></button>
+        <button class="touch-btn touch-heavy" data-action="heavy">✦<span>Ruptura</span></button>
+        <button class="touch-btn touch-dodge" data-action="dodge">➜<span>Esquivar</span></button>
+        <button class="touch-btn touch-block" data-action="block">◈<span>Bloquear</span></button>
+        <button class="touch-btn touch-interact" data-action="interact">E<span>Acción</span></button>
+        <button class="touch-btn touch-resonance" data-action="resonance">◉<span>Resonar</span></button>
+        <button class="touch-btn touch-companion" data-action="companion">❖<span>Vínculo</span></button>
+        <button class="touch-btn touch-potion" data-action="potion">◈<span>Elixir</span></button>
+        <button class="touch-btn touch-menu" data-action="menu">☰<span>Diario</span></button>
+      </div>
+    </div>
+
+    <section id="dialogue-screen" class="dialogue-screen" aria-label="Diálogo">
+      <div class="dialogue-box">
+        <div id="dialogue-portrait" class="dialogue-portrait"></div>
+        <div class="dialogue-copy">
+          <div class="dialogue-name-row"><h3 id="dialogue-name">Lira</h3><span id="dialogue-role">Guardián del Alba</span></div>
+          <p id="dialogue-text"></p>
+          <div id="dialogue-choices" class="dialogue-choices"></div>
+          <span id="dialogue-next" class="dialogue-next">Continuar <i>›</i></span>
+        </div>
+      </div>
+    </section>
+
+    <section id="menu-screen" class="screen menu-screen" aria-label="Diario de viaje">
+      <div class="menu-shell">
+        <header class="menu-head">
+          <div><p class="eyebrow">DIARIO DEL PORTADOR</p><h2 id="menu-title">Aster</h2><span id="menu-subtitle">Nv. 1 · Vanguardia de Valdoria</span></div>
+          <button id="menu-close" class="close-btn" aria-label="Cerrar diario">✕</button>
+        </header>
+        <nav class="menu-tabs" id="menu-tabs">
+          <button data-tab="character" class="is-active">Personaje</button>
+          <button data-tab="equipment">Equipo</button>
+          <button data-tab="creatures">Criaturas</button>
+          <button data-tab="journal">Diario</button>
+          <button data-tab="map">Mapa</button>
+          <button data-tab="settings">Ajustes</button>
+        </nav>
+        <div id="menu-content" class="menu-content"></div>
+        <footer class="menu-footer"><span id="menu-hint">Tab / Esc para volver al mundo</span><span id="menu-gold">✦ 0 esencia</span></footer>
+      </div>
+    </section>
+
+    <section id="modal-screen" class="screen modal-screen" aria-label="Información">
+      <div class="modal-card">
+        <button id="modal-close" class="close-btn">✕</button>
+        <div id="modal-content"></div>
+      </div>
+    </section>
+
+    <section id="ending-screen" class="screen ending-screen" aria-label="Final">
+      <div class="ending-inner">
+        <p class="eyebrow">LA CONVERGENCIA ABSOLUTA</p>
+        <h2>No era el final.<br /><em>Era el Despertar.</em></h2>
+        <p id="ending-copy">La Espada Celestial vuelve a cantar. Pero al otro lado del Velo, algo ha escuchado su nombre.</p>
+        <div id="ending-stats" class="ending-stats"></div>
+        <div class="ending-actions">
+          <button id="ending-continue" class="forge-btn"><span>SEGUIR EXPLORANDO</span><small>El mundo aún guarda secretos</small></button>
+          <button id="ending-new" class="ghost-btn">Nueva partida+</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="fade-layer" class="fade-layer"></div>
+    <div id="rotate-device" class="rotate-device"><div class="rotate-glyph">▭</div><h2>Gira tu dispositivo</h2><p>La Espada Celestial se juega en horizontal.</p></div>
+    <div id="save-indicator" class="save-indicator"><span></span> Guardando…</div>
+    <div id="unsupported" class="unsupported"><h2>Tu navegador no puede abrir el Velo</h2><p>Activa WebGL 2 o prueba con una versión reciente de Chrome, Edge o Safari.</p></div>
+  </div>
+</body>
+</html>

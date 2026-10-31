@@ -1,0 +1,19 @@
+{
+  "name": "la-espada-celestial",
+  "version": "0.9.0",
+  "private": true,
+  "type": "module",
+  "description": "LA ESPADA CELESTIAL — RPG de acción, exploración y resonancia de criaturas.",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build --base ./",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node tests/smoke.mjs"
+  },
+  "dependencies": {
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "vite": "^8.3.5"
+  }
+}
