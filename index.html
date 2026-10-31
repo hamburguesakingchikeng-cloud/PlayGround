@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0d17">
+  <meta name="description" content="La Espada Celestial — un RPG de acción de fantasía épica. Explora Valdoria, Drakmor y Kansordore, sella vínculos con criaturas y decide el destino del Velo.">
+  <title>La Espada Celestial</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="game" aria-label="Mundo de juego" role="img"></canvas>
+
+  <div id="grain" aria-hidden="true"></div>
+  <div id="letterbox" aria-hidden="true"><span></span><span></span></div>
+
+  <!-- ══════════════ HUD ══════════════ -->
+  <section id="hud" class="hidden" aria-label="Interfaz de juego">
+    <div class="hud-vitals">
+      <div class="portrait-ring" id="hud-portrait"><canvas width="96" height="96"></canvas><i class="lvl" id="hud-level">1</i></div>
+      <div class="vital-stack">
+        <div class="vital-name"><span id="hud-name">Ariadne</span><small id="hud-class">Guardián del Alba</small></div>
+        <div class="bar hp"><div class="bar-fill" id="bar-hp"></div><span id="txt-hp">100 / 100</span></div>
+        <div class="bar mp"><div class="bar-fill" id="bar-mp"></div><span id="txt-mp">40 / 40</span></div>
+        <div class="bar st"><div class="bar-fill" id="bar-st"></div><span id="txt-st">60 / 60</span></div>
+        <div class="xp"><div id="bar-xp"></div></div>
+      </div>
+    </div>
+
+    <div class="hud-right">
+      <div class="region-chip"><span id="hud-region">VALDORIA</span><small id="hud-subloc">Brumavela</small></div>
+      <div class="minimap-wrap"><canvas id="minimap" width="180" height="180"></canvas><div class="mm-ring"></div><div class="mm-n">N</div></div>
+      <div class="quest-chip" id="quest-chip"><span class="q-label">OBJETIVO</span><b id="hud-quest">Habla con la maestra Iria</b><small id="hud-quest-dist"></small></div>
+      <div class="currency"><span class="ico-shard"></span><b id="hud-shards">0</b><span class="ico-gold"></span><b id="hud-gold">0</b></div>
+    </div>
+
+    <div class="companion-chip hidden" id="companion-chip">
+      <canvas id="companion-portrait" width="72" height="72"></canvas>
+      <div><small>ECO VINCULADO</small><b id="companion-name">Lumi</b></div>
+      <div class="comp-hp"><i id="companion-hp"></i></div>
+    </div>
+
+    <div class="boss-wrap hidden" id="boss-wrap">
+      <div class="boss-head"><span id="boss-epithet">GUARDIÁN DE VALDORIA</span><b id="boss-name">El Ciervo de Ceniza</b></div>
+      <div class="boss-bar"><i id="boss-hp"></i><em id="boss-delay"></em></div>
+      <div class="boss-phase" id="boss-phase"></div>
+    </div>
+
+    <div class="combo-indicator" id="combo-indicator"><b>0</b><span>GOLPES</span></div>
+
+    <div class="interact-prompt hidden" id="interact-prompt"><kbd>E</kbd><span id="interact-text">Hablar</span></div>
+    <div class="skill-cooldowns" id="cooldown-row"></div>
+    <div class="toast-layer" id="toast-layer" aria-live="polite"></div>
+    <div class="subtitle" id="subtitle" aria-live="polite"></div>
+    <div class="danger-vignette" id="danger-vignette"></div>
+
+    <!-- táctil -->
+    <div id="touch-ui">
+      <div class="joystick" id="joystick"><div class="js-ring"></div><div class="js-knob" id="js-knob"></div></div>
+      <div class="action-cluster">
+        <button class="act act-attack" data-action="attack" aria-label="Atacar"><svg viewBox="0 0 24 24"><path d="M4 20l7-7m0 0l6-9 4 4-9 6m-1-1l-2 5-4 2 2-4 5-2z"/></svg></button>
+        <button class="act act-dodge" data-action="dodge" aria-label="Esquivar"><svg viewBox="0 0 24 24"><path d="M5 12h11m-4-5l5 5-5 5M18 4l2 2-2 2"/></svg><span>ESQ</span></button>
+        <button class="act act-block" data-action="block" aria-label="Bloquear"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg></button>
+        <button class="act act-interact hidden" data-action="interact" aria-label="Interactuar"><svg viewBox="0 0 24 24"><path d="M12 3v10m0 0l-4-4m4 4l4-4M5 16v4h14v-4"/></svg></button>
+        <button class="act act-summon" data-action="summon" aria-label="Invocar eco"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg></button>
+      </div>
+      <div class="skill-wheel" id="skill-wheel"></div>
+      <button id="btn-menu" class="hud-icon-btn" aria-label="Abrir menú"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <button id="btn-map" class="hud-icon-btn map-btn" aria-label="Abrir mapa"><svg viewBox="0 0 24 24"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zM9 4v14M15 6v14"/></svg></button>
+    </div>
+  </section>
+
+  <!-- ══════════════ TÍTULO ══════════════ -->
+  <section id="title-screen" class="screen">
+    <div class="title-top"><span class="sigil">✦</span><span>UN RELATO DEL VELO</span><span class="sigil">✦</span></div>
+    <div class="title-main">
+      <p class="title-kicker">La profecía hablaba de un jugador cero</p>
+      <h1><span>LA ESPADA</span><em>CELESTIAL</em></h1>
+      <p class="title-sub">Donde termina el cielo, comienza tu leyenda</p>
+      <div class="title-actions">
+        <button class="btn btn-primary" id="btn-new">NUEVA PARTIDA</button>
+        <button class="btn" id="btn-continue">CONTINUAR</button>
+        <button class="btn btn-ghost" id="btn-title-options">OPCIONES</button>
+      </div>
+    </div>
+    <div class="title-bottom">
+      <span>v1.0 · Un juego original de IA Game Lab</span>
+      <span class="title-hint">Ajusta el volumen con el botón de sonido <button class="mini-sound" id="btn-title-sound" aria-label="Activar sonido">♪</button></span>
+    </div>
+    <div class="title-credit">ESCUCHA EL VIENTO. RECUERDA TU NOMBRE.</div>
+  </section>
+
+  <!-- ══════════════ CREACIÓN ══════════════ -->
+  <section id="create-screen" class="screen hidden">
+    <header class="create-head">
+      <div><span class="eyebrow">FORJA TU LEYENDA</span><h2>El que despierta</h2></div>
+      <p>No elegiste este mundo. Él te eligió a ti. Pero tu forma de recorrerlo aún está por escribir.</p>
+      <button class="btn btn-ghost btn-small" id="btn-create-back">VOLVER</button>
+    </header>
+    <div class="create-body">
+      <div class="create-preview">
+        <canvas id="preview-canvas" width="520" height="620"></canvas>
+        <div class="preview-caption"><span id="preview-name">Ariadne</span><small id="preview-class">Guardián del Alba</small></div>
+        <div class="preview-stats" id="preview-stats"></div>
+      </div>
+      <div class="create-form" id="create-form">
+        <div class="field-row">
+          <label class="field"><span>NOMBRE</span><input id="inp-name" type="text" maxlength="14" value="Ariadne" autocomplete="off" spellcheck="false"></label>
+          <label class="field"><span>PRONOMBRE</span><select id="inp-gender"><option value="ella">Ella</option><option value="el">Él</option><option value="elle">Elle</option></select></label>
+        </div>
+
+        <div class="section-label"><span>JURAMENTO</span><i></i></div>
+        <div class="class-cards" id="class-cards"></div>
+
+        <div class="section-label"><span>APARIENCIA</span><i></i></div>
+        <div class="appearance-grid" id="appearance-grid"></div>
+
+        <div class="section-label"><span>ATRIBUTOS</span><i></i><small id="points-left">6 puntos libres</small></div>
+        <div class="stat-alloc" id="stat-alloc"></div>
+        <div class="create-footer">
+          <p id="create-warning">La profecía no promete un final feliz. Solo uno tuyo.</p>
+          <button class="btn btn-primary btn-wide" id="btn-begin">DESPERTAR</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ CINEMÁTICA / DIÁLOGO ══════════════ -->
+  <section id="cinematic" class="hidden">
+    <div class="cine-backdrop"><canvas id="cine-canvas"></canvas></div>
+    <div class="cine-bars"><i></i><i></i></div>
+    <div class="cine-content">
+      <span class="cine-chapter" id="cine-chapter"></span>
+      <p class="cine-text" id="cine-text"></p>
+      <small class="cine-continue" id="cine-continue">Toca para continuar</small>
+    </div>
+    <button id="btn-skip-cine" class="skip-btn">SALTAR ›</button>
+  </section>
+
+  <section id="dialog" class="hidden" aria-live="polite">
+    <div class="dialog-box">
+      <div class="dialog-portrait"><canvas id="dialog-portrait" width="220" height="260"></canvas></div>
+      <div class="dialog-body">
+        <div class="dialog-head"><span id="dialog-speaker">Iria</span><small id="dialog-role">Maestra de la Orden del Alba</small></div>
+        <p id="dialog-text"></p>
+        <div class="dialog-choices hidden" id="dialog-choices"></div>
+        <button class="dialog-next" id="dialog-next">CONTINUAR <span>▸</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ MENÚS ══════════════ -->
+  <section id="menu" class="screen hidden">
+    <div class="menu-shell">
+      <aside class="menu-side">
+        <div class="menu-brand"><span>✦</span><b>LA ESPADA<br>CELESTIAL</b></div>
+        <nav id="menu-tabs">
+          <button data-tab="character" class="active">PERSONAJE</button>
+          <button data-tab="inventory">INVENTARIO</button>
+          <button data-tab="ecos">ECOS</button>
+          <button data-tab="journal">DIARIO</button>
+          <button data-tab="map">MAPA</button>
+          <button data-tab="settings">OPCIONES</button>
+        </nav>
+        <div class="menu-side-foot"><span id="menu-playtime">00:00</span><button id="btn-save" class="btn btn-ghost btn-small">GUARDAR</button></div>
+      </aside>
+      <main class="menu-content" id="menu-content"></main>
+      <button class="menu-close" id="btn-menu-close" aria-label="Cerrar menú">✕</button>
+    </div>
+  </section>
+
+  <!-- ══════════════ FINAL ══════════════ -->
+  <section id="ending" class="screen hidden">
+    <div class="ending-inner">
+      <span class="eyebrow" id="ending-eyebrow">EL FINAL DEL RELATO</span>
+      <h2 id="ending-title">Ascensión</h2>
+      <div class="ending-rule"></div>
+      <p id="ending-text"></p>
+      <div class="ending-stats" id="ending-stats"></div>
+      <div class="ending-actions">
+        <button class="btn btn-primary" id="btn-ending-continue">SEGUIR RESPIRANDO</button>
+        <button class="btn btn-ghost" id="btn-ending-title">VOLVER AL TÍTULO</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ GENÉRICOS ══════════════ -->
+  <div id="modal-layer" class="hidden">
+    <div class="modal" id="modal">
+      <h3 id="modal-title"></h3>
+      <div id="modal-body"></div>
+      <div class="modal-actions" id="modal-actions"></div>
+    </div>
+  </div>
+
+  <div id="loading" class="screen">
+    <div class="load-sigil"><svg viewBox="0 0 100 100"><path d="M50 6l7 30 30 7-30 7-7 30-7-30-30-7 30-7z"/><circle cx="50" cy="49" r="40"/></svg></div>
+    <h3>LA ESPADA CELESTIAL</h3>
+    <div class="load-bar"><i id="load-fill"></i></div>
+    <p id="load-text">Tejiendo el Velo…</p>
+  </div>
+
+  <div id="rotate-hint"><div><span>↻</span><b>GIRA EL DISPOSITIVO</b><small>La Espada Celestial se juega en horizontal.</small></div></div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
