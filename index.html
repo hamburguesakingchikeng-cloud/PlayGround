@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#070a17" />
+<title>La Espada Celestial — Prólogo</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23070a17'/%3E%3Cpath d='M16 4l3 16-3 8-3-8z' fill='%23e6c983'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div id="hud" class="hud">
+    <div class="hud-left">
+      <div class="portrait"><span>莲</span></div>
+      <div class="bars">
+        <div class="bar hp"><i id="hpfill"></i></div>
+        <div class="bar qi"><i id="qifill"></i></div>
+        <div class="bar xp"><i id="xpfill"></i></div>
+      </div>
+      <div class="lvl"><span>Nv <b id="lvl">1</b></span><b id="hptext" class="hpnum">100 / 100</b></div>
+    </div>
+
+    <div id="bossbar" class="bossbar">
+      <div class="bossname" id="bossname">Centinela del Cielo Roto</div>
+      <div class="bossbar-track"><i id="bossfill"></i></div>
+    </div>
+
+    <div id="wavebanner" class="wavebanner"></div>
+
+    <button id="pausebtn" class="pausebtn" aria-label="Pausa">II</button>
+  </div>
+
+  <div id="touch" class="touch">
+    <div id="stick" class="stick"><div id="knob" class="knob"></div></div>
+    <div class="btns">
+      <button id="btnSkill" class="btn btn-skill" aria-label="Corte Celestial">Corte<br /><small>Celestial</small></button>
+      <button id="btnDash" class="btn btn-dash" aria-label="Esquivar">Esquiva</button>
+      <button id="btnAtk" class="btn btn-atk" aria-label="Cortar">Corte</button>
+    </div>
+  </div>
+
+  <div id="dialogue" class="dialogue">
+    <div class="who" id="dlgwho"></div>
+    <p class="line" id="dlgtext"></p>
+    <div class="hint">Toca o pulsa Espacio ▸</div>
+  </div>
+
+  <div id="title" class="overlay">
+    <div class="title-card">
+      <p class="kicker">Prólogo · Isla I</p>
+      <h1>La Espada<br /><em>Celestial</em></h1>
+      <p class="sub">El cielo no cayó. Se astilló.</p>
+      <div class="menu">
+        <button class="primary" data-act="play">Comenzar</button>
+        <button data-act="continue" id="btnContinue">Continuar</button>
+        <button data-act="help">Cómo se juega</button>
+      </div>
+      <p class="foot">Vertical slice · arte procedural</p>
+    </div>
+  </div>
+
+  <div id="help" class="overlay hidden">
+    <div class="panel">
+      <h2>Cómo se juega</h2>
+      <ul class="keys">
+        <li><span>Mover</span> WASD / flechas / joystick</li>
+        <li><span>Corte</span> J · Espacio · botón Corte</li>
+        <li><span>Corte Celestial</span> K · botón (gasta Qi)</li>
+        <li><span>Esquiva</span> Shift · botón (invulnerable)</li>
+        <li><span>Pausa</span> Esc · P</li>
+      </ul>
+      <p class="note">No puedes atacar y esquivar a la vez. El Qi se recupera golpeando.</p>
+      <button class="primary" data-act="closehelp">Volver</button>
+    </div>
+  </div>
+
+  <div id="pause" class="overlay hidden">
+    <div class="panel">
+      <h2>Pausa</h2>
+      <div class="menu">
+        <button class="primary" data-act="resume">Continuar</button>
+        <button data-act="save">Guardar</button>
+        <button data-act="quit">Abandonar</button>
+      </div>
+      <p class="note" id="savenote"></p>
+    </div>
+  </div>
+
+  <div id="dead" class="overlay hidden">
+    <div class="panel">
+      <h2 class="rose">La cima te devuelve</h2>
+      <p class="note">Nada se pierde. Vuelve a intentarlo.</p>
+      <div class="menu">
+        <button class="primary" data-act="retry">Reintentar</button>
+        <button data-act="quit">Salir al título</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="win" class="overlay hidden">
+    <div class="panel">
+      <p class="kicker">Fragmento I recuperado</p>
+      <h2 class="gold">El Centinela calla</h2>
+      <p class="note" id="winstats"></p>
+      <div class="menu">
+        <button class="primary" data-act="again">Volver a subir</button>
+        <button data-act="quit">Título</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/game.js"></script>
+</body>
+</html>
