@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0810" />
+<meta name="description" content="Cryptfall — a Vampire Survivors run powered by Diablo-style loot. Descend, slay, and build your build from what the dead leave behind." />
+<title>Cryptfall — Loot in the Dark</title>
+<link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<div id="app">
+  <canvas id="game" aria-label="Cryptfall game world"></canvas>
+
+  <div id="hud" class="hidden">
+    <div id="xpbar"><div id="xpfill"></div></div>
+    <div class="hud-top">
+      <div class="hud-left">
+        <div id="levelMedal"><span id="levelNum">1</span><small>LVL</small></div>
+        <div class="bars">
+          <div class="hpbar"><div id="hpfill"></div><span id="hptext">100 / 100</span></div>
+          <div class="hpsub"><span id="hpregen">+0.0 /s</span><span id="armorVal">0 ARMOR</span></div>
+        </div>
+      </div>
+      <div class="hud-center">
+        <div id="timer">00:00</div>
+        <div id="kills"><b>0</b> SLAIN</div>
+      </div>
+      <div class="hud-right">
+        <div id="gold"><span class="coin"></span><span id="goldNum">0</span></div>
+        <button id="btnBag" class="iconbtn" aria-label="Open satchel" title="Satchel (I)"></button>
+        <button id="btnMute" class="iconbtn" aria-label="Toggle sound" title="Sound (M)"></button>
+        <button id="btnPause" class="iconbtn" aria-label="Pause" title="Pause (Esc)"></button>
+      </div>
+    </div>
+
+    <div id="bossbar" class="hidden">
+      <div class="bossname"><span id="bossName">The Bone Tyrant</span><span id="bossPct">100%</span></div>
+      <div class="bossTrack"><div id="bossfill"></div></div>
+    </div>
+
+    <div id="weaponChip">
+      <span id="weaponIcon" class="chipico"></span>
+      <div><b id="weaponName">Bone Wand</b><small id="weaponSub">Arcane Bolt</small></div>
+    </div>
+
+    <div id="hint">WASD / ARROWS move &nbsp;·&nbsp; auto-attack &nbsp;·&nbsp; I satchel &nbsp;·&nbsp; ESC pause</div>
+    <div id="announce"></div>
+  </div>
+
+  <div id="joystick" class="hidden"><div class="stick"><div class="knob"></div></div></div>
+  <div id="toasts"></div>
+
+  <!-- ── Level up ───────────────────────────────────────────── -->
+  <div id="levelup" class="overlay hidden">
+    <div class="panel levelpanel">
+      <div class="eyebrow">THE CRYPT REWARDS YOU</div>
+      <h2>Level <span id="luLevel">2</span></h2>
+      <div id="luCards" class="cards"></div>
+      <div class="lufoot">
+        <button id="btnReroll" class="btn ghost">Reroll · <span id="rerollCost">25</span>g</button>
+        <span class="muted">Choose a boon</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Inventory ──────────────────────────────────────────── -->
+  <div id="inventory" class="overlay hidden">
+    <div class="panel invpanel">
+      <div class="invhead">
+        <div>
+          <div class="eyebrow">VESSEL &amp; SATCHEL</div>
+          <h2>Armory</h2>
+        </div>
+        <div class="invhead-right">
+          <div id="invGold"><span class="coin"></span><span id="invGoldNum">0</span></div>
+          <button id="btnInvClose" class="iconbtn" aria-label="Close satchel"></button>
+        </div>
+      </div>
+      <div class="invbody">
+        <div class="doll">
+          <div class="doll-title">EQUIPPED</div>
+          <div class="slots" id="equipSlots"></div>
+          <div class="doll-title">ATTRIBUTES</div>
+          <div class="stats" id="statList"></div>
+        </div>
+        <div class="satchel">
+          <div class="satchel-top">
+            <span id="bagCount">0 / 30</span>
+            <div class="satchel-actions">
+              <button id="btnSort" class="btn tiny">Sort</button>
+              <button id="btnSellJunk" class="btn tiny danger">Sell junk</button>
+            </div>
+          </div>
+          <div id="bagGrid" class="baggrid"></div>
+          <div id="itemDetail" class="itemdetail"><span class="muted">Select an item to inspect it.</span></div>
+          <label class="autoequip"><input type="checkbox" id="autoEquip" /> Auto-equip upgrades</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Menu ───────────────────────────────────────────────── -->
+  <div id="menu" class="overlay menuoverlay">
+    <div class="menu-inner">
+      <div class="crest" id="menuCrest"></div>
+      <h1 class="title">CRYPT<span>FALL</span></h1>
+      <p class="tagline">A Vampire Survivors run, powered by Diablo loot.</p>
+      <p class="lede">The dead carry what they died with. Kill them, take it, wear it, and see how deep the dark goes.</p>
+      <div class="relic-label">CHOOSE YOUR RELIC</div>
+      <div class="relics" id="relicCards"></div>
+      <div class="menu-foot">
+        <span id="bestRecord" class="muted"></span>
+        <span class="muted">Auto-attack · 10 minute descent · touch &amp; keyboard</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Pause ──────────────────────────────────────────────── -->
+  <div id="pause" class="overlay hidden">
+    <div class="panel smallpanel">
+      <div class="eyebrow">THE DARK WAITS</div>
+      <h2>Paused</h2>
+      <p class="muted center">Your satchel is safe. The dead are patient.</p>
+      <div class="stack">
+        <button id="btnResume" class="btn primary">Resume</button>
+        <button id="btnPauseBag" class="btn">Open satchel</button>
+        <button id="btnQuit" class="btn ghost">Abandon run</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Game over / victory ────────────────────────────────── -->
+  <div id="gameover" class="overlay hidden">
+    <div class="panel smallpanel endpanel">
+      <div class="eyebrow" id="endEyebrow">THE CRYPT CLAIMS YOU</div>
+      <h2 id="endTitle" class="endtitle">You Died</h2>
+      <p id="endFlavor" class="muted center"></p>
+      <div class="endstats" id="endStats"></div>
+      <div class="endbest" id="endBest"></div>
+      <div class="stack row">
+        <button id="btnAgain" class="btn primary">Descend again</button>
+        <button id="btnEndBag" class="btn">Review loot</button>
+        <button id="btnMenu" class="btn ghost">Change relic</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
