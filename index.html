@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0814">
+  <meta name="description" content="LA ESPADA CELESTIAL — un RPG de acción de fantasía original. Tres reinos, resonancias, elecciones y el Velo.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>LA ESPADA CELESTIAL</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+  <link rel="preload" href="assets/fonts/cinzel.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/cormorant.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <canvas id="game" aria-label="Mundo de La Espada Celestial"></canvas>
+
+    <!-- ══ HUD ══════════════════════════════════════════════════════════ -->
+    <div id="hud" class="hud hidden" aria-live="polite">
+      <div class="hud-top">
+        <div class="hud-panel hud-vitals">
+          <div class="portrait-frame">
+            <canvas id="hud-portrait" width="72" height="72" aria-hidden="true"></canvas>
+            <span class="level-badge" id="hud-level">1</span>
+          </div>
+          <div class="vitals-body">
+            <div class="vitals-name"><span id="hud-name">Peregrino</span><em id="hud-origin">Vástago de la Brasa</em></div>
+            <div class="bar bar-hp"><i id="bar-hp"></i><span id="txt-hp">100 / 100</span></div>
+            <div class="bar bar-mp"><i id="bar-mp"></i><span id="txt-mp">30 / 30</span></div>
+            <div class="bar bar-st"><i id="bar-st"></i><span id="txt-st">60 / 60</span></div>
+            <div class="vitals-meta">
+              <span id="hud-gold">◈ 60</span>
+              <span id="hud-ult" class="ult-pip">DEF 0%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hud-center">
+          <div id="boss-bar" class="boss-bar hidden">
+            <div class="boss-head"><span id="boss-name">Guardián</span><em id="boss-phase"></em></div>
+            <div class="bar bar-boss"><i id="bar-boss"></i></div>
+          </div>
+          <div id="region-banner" class="region-banner hidden">
+            <strong id="region-banner-name"></strong>
+            <span id="region-banner-sub"></span>
+          </div>
+        </div>
+
+        <div class="hud-panel hud-map">
+          <div class="minimap-shell">
+            <canvas id="minimap" width="190" height="148" aria-label="Mapa de la región"></canvas>
+            <div class="minimap-label"><span id="region-name">Valdoria</span><em id="region-level">Nv. 1–3</em></div>
+          </div>
+          <div id="quest-tracker" class="quest-tracker">
+            <span class="quest-kicker">MISIÓN</span>
+            <strong id="quest-title">El despertar</strong>
+            <p id="quest-objective">Habla con la Anciana Maren.</p>
+            <span id="quest-progress" class="quest-progress"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-bottom">
+        <div id="interact-prompt" class="interact-prompt hidden"><kbd>E</kbd><span id="interact-text">Hablar</span></div>
+        <div id="companion-chip" class="companion-chip hidden">
+          <span class="companion-dot"></span>
+          <div><strong id="companion-name">Resonancia</strong><em id="companion-cd">Lista</em></div>
+        </div>
+      </div>
+
+      <!-- Controles táctiles -->
+      <div id="touch-controls" class="touch-controls" aria-label="Controles táctiles">
+        <div id="joystick" class="joystick" aria-label="Movimiento">
+          <div class="joystick-ring"></div>
+          <div id="joystick-knob" class="joystick-knob"></div>
+        </div>
+        <div class="touch-actions">
+          <button class="touch-btn btn-spell" data-action="spell" aria-label="Hechizo">✦<small>HECHIZO</small></button>
+          <button class="touch-btn btn-companion" data-action="companion" aria-label="Resonancia">❧<small>ECO</small></button>
+          <button class="touch-btn btn-capture" data-action="capture" aria-label="Sintonizar">◇<small>SINTONIZAR</small></button>
+          <button class="touch-btn btn-potion" data-action="potion" aria-label="Poción">✚<small>POCIÓN</small></button>
+          <button class="touch-btn btn-interact" data-action="interact" aria-label="Interactuar">E<small>USAR</small></button>
+          <button class="touch-btn btn-dodge" data-action="dodge" aria-label="Esquivar">➤<small>ESQUIVA</small></button>
+          <button class="touch-btn btn-heavy" data-action="heavy" aria-label="Ataque pesado">⚔<small>PESADO</small></button>
+          <button class="touch-btn btn-attack" data-action="attack" aria-label="Atacar">⚔<small>ATACAR</small></button>
+          <button class="touch-btn btn-ult" data-action="ultimate" aria-label="Definitiva">★<small>DEFINITIVA</small></button>
+        </div>
+      </div>
+
+      <div id="rotate-hint" class="rotate-hint hidden">
+        <div class="rotate-icon">⟳</div>
+        <strong>Gira el dispositivo</strong>
+        <span>La Espada Celestial se juega mejor en horizontal.</span>
+        <button id="rotate-dismiss" class="btn btn-ghost">Seguir en vertical</button>
+      </div>
+
+      <div class="hud-menu-buttons">
+        <button id="btn-menu" class="icon-btn" aria-label="Menú">☰</button>
+        <button id="btn-map" class="icon-btn" aria-label="Mapa">◈</button>
+      </div>
+    </div>
+
+    <!-- ══ OVERLAY / PANTALLAS ═════════════════════════════════════════ -->
+    <div id="overlay" class="overlay">
+
+      <!-- Título -->
+      <section id="screen-title" class="screen title-screen">
+        <div class="title-ornament top"></div>
+        <div class="title-content">
+          <p class="eyebrow">Una leyenda original</p>
+          <h1 class="game-logo"><span>LA ESPADA</span><span class="logo-accent">CELESTIAL</span></h1>
+          <p class="tagline">Tres reinos. Ocho vidas. Una elección que ningún dios se atrevió a hacer.</p>
+          <div class="title-actions">
+            <button id="btn-play" class="btn btn-primary btn-large" aria-label="Play">JUGAR</button>
+            <button id="btn-continue" class="btn btn-secondary hidden">CONTINUAR</button>
+            <div class="title-row">
+              <button id="btn-creator" class="btn btn-ghost">CREAR PERSONAJE</button>
+              <button id="btn-title-settings" class="btn btn-ghost">AJUSTES</button>
+            </div>
+          </div>
+          <div class="title-lore">
+            <span>VALDORIA</span><i>·</i><span>DRAKMOR</span><i>·</i><span>KANSORDORE</span>
+          </div>
+        </div>
+        <div class="title-footer">
+          <span>Teclado · Mando · Táctil</span>
+          <span>v1.0 — Una historia de la Jarra de Origen</span>
+        </div>
+      </section>
+
+      <!-- Creador de personaje -->
+      <section id="screen-creator" class="screen creator-screen hidden">
+        <header class="creator-head">
+          <button id="btn-creator-back" class="btn btn-ghost btn-small">← Volver</button>
+          <div>
+            <p class="eyebrow">Forja tu leyenda</p>
+            <h2>EL OCTAVO RECIPIENTE</h2>
+          </div>
+          <span class="creator-step">Paso 1 de 1</span>
+        </header>
+        <div class="creator-layout">
+          <aside class="creator-preview-panel">
+            <div class="preview-frame">
+              <canvas id="creator-preview" width="280" height="340" aria-label="Vista previa del personaje"></canvas>
+              <div class="preview-corners"></div>
+            </div>
+            <div class="origin-quote">
+              <strong id="origin-name">Vástago de la Brasa</strong>
+              <em id="origin-epithet">La mano que no tiembla</em>
+              <p id="origin-desc">Creciste entre yunques y juramentos.</p>
+            </div>
+          </aside>
+
+          <div class="creator-form">
+            <div class="form-block">
+              <label class="field-label" for="char-name">Nombre del peregrino</label>
+              <input id="char-name" class="text-input" maxlength="18" value="Peregrino" autocomplete="off" spellcheck="false">
+            </div>
+
+            <div class="form-block">
+              <span class="field-label">Origen</span>
+              <div id="origin-cards" class="origin-cards"></div>
+            </div>
+
+            <div class="form-block">
+              <span class="field-label">Apariencia</span>
+              <div class="appearance-grid">
+                <div class="appearance-item">
+                  <span>Pelo</span>
+                  <div id="hair-styles" class="chip-row"></div>
+                </div>
+                <div class="appearance-item">
+                  <span>Color de pelo</span>
+                  <div id="hair-colors" class="swatch-row"></div>
+                </div>
+                <div class="appearance-item">
+                  <span>Piel</span>
+                  <div id="skin-colors" class="swatch-row"></div>
+                </div>
+                <div class="appearance-item">
+                  <span>Ropa</span>
+                  <div id="outfit-colors" class="swatch-row"></div>
+                </div>
+                <div class="appearance-item">
+                  <span>Armadura</span>
+                  <div id="armor-colors" class="swatch-row"></div>
+                </div>
+                <div class="appearance-item">
+                  <span>Capa</span>
+                  <div id="cape-colors" class="swatch-row"></div>
+                </div>
+                <label class="toggle-item"><input id="char-cape" type="checkbox" checked> Llevar capa</label>
+                <label class="toggle-item"><input id="char-helmet" type="checkbox"> Llevar yelmo</label>
+              </div>
+            </div>
+
+            <div class="form-block">
+              <span class="field-label">Atributos <em id="points-left" class="points-left">8 puntos libres</em></span>
+              <div id="stat-grid" class="stat-grid"></div>
+            </div>
+
+            <div class="form-block">
+              <span class="field-label">Dificultad</span>
+              <div id="difficulty-cards" class="difficulty-cards"></div>
+            </div>
+
+            <div class="creator-actions">
+              <button id="btn-start-game" class="btn btn-primary btn-large">COMENZAR LA TRAVESÍA</button>
+              <button id="btn-randomize" class="btn btn-ghost">ALEATORIO</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Diálogo -->
+      <section id="dialogue" class="dialogue hidden" aria-live="polite">
+        <div class="dialogue-portrait-wrap">
+          <canvas id="dialogue-portrait" width="128" height="128" aria-hidden="true"></canvas>
+          <div class="portrait-glow"></div>
+        </div>
+        <div class="dialogue-main">
+          <div class="dialogue-head">
+            <span id="dialogue-name">Anciana Maren</span>
+            <span id="dialogue-role">Anciana de Lumen</span>
+          </div>
+          <p id="dialogue-text"></p>
+          <div id="dialogue-choices" class="dialogue-choices"></div>
+          <button id="dialogue-next" class="dialogue-next" aria-label="Continuar">▸</button>
+        </div>
+      </section>
+
+      <!-- Panel dinámico -->
+      <section id="panel-screen" class="panel-screen hidden" aria-live="polite">
+        <div class="panel-card" id="panel-card"></div>
+      </section>
+
+      <!-- Menú de pausa -->
+      <section id="menu-screen" class="panel-screen hidden">
+        <div class="panel-card menu-card">
+          <div class="menu-head">
+            <p class="eyebrow">La travesía espera</p>
+            <h2>PAUSA</h2>
+            <p id="menu-subtitle">Valdoria · Nivel 1</p>
+          </div>
+          <div class="menu-actions">
+            <button class="btn btn-primary" data-menu="resume">CONTINUAR</button>
+            <button class="btn btn-ghost" data-menu="inventory">INVENTARIO</button>
+            <button class="btn btn-ghost" data-menu="skills">HABILIDADES</button>
+            <button class="btn btn-ghost" data-menu="journal">DIARIO</button>
+            <button class="btn btn-ghost" data-menu="codex">CÓDICE</button>
+            <button class="btn btn-ghost" data-menu="map">MAPA</button>
+            <button class="btn btn-ghost" data-menu="save">GUARDAR / CARGAR</button>
+            <button class="btn btn-ghost" data-menu="settings">AJUSTES</button>
+            <button class="btn btn-ghost" data-menu="help">CÓMO JUGAR</button>
+            <button class="btn btn-danger" data-menu="title">VOLVER AL TÍTULO</button>
+          </div>
+          <p class="menu-foot">Los ecos se guardan automáticamente al avanzar.</p>
+        </div>
+      </section>
+
+      <!-- Pantalla de muerte -->
+      <section id="death-screen" class="screen death-screen hidden">
+        <div class="death-content">
+          <p class="eyebrow">La Jarra te recoge</p>
+          <h2>HAS CAÍDO</h2>
+          <p id="death-text">La octava vida no termina aquí. El Velo aún tiembla.</p>
+          <div class="death-actions">
+            <button id="btn-revive" class="btn btn-primary">VOLVER AL ÚLTIMO ECO</button>
+            <button id="btn-death-title" class="btn btn-ghost">ABANDONAR AL TÍTULO</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Final -->
+      <section id="ending-screen" class="screen ending-screen hidden">
+        <div class="ending-content">
+          <p class="eyebrow">La Convergencia se completa</p>
+          <h2 id="ending-title">EL VELO ROTO</h2>
+          <p id="ending-subtitle">El mundo que eligió recordar</p>
+          <div id="ending-lines" class="ending-lines"></div>
+          <p id="ending-epilogue" class="ending-epilogue"></p>
+          <div id="ending-stats" class="ending-stats"></div>
+          <div class="ending-actions">
+            <button id="btn-ending-title" class="btn btn-primary">VOLVER AL TÍTULO</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="toasts" class="toasts" aria-live="polite"></div>
+    <div id="loading" class="loading hidden"><span class="loading-rune">✦</span><p>Tejiendo el mundo…</p></div>
+    <div id="fatal" class="fatal hidden"></div>
+  </div>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
