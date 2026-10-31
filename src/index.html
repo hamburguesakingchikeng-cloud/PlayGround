@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#05070d" />
+  <title>La Espada Celestial · RPG</title>
+  <meta name="description" content="La Espada Celestial: un RPG de artes marciales para navegador y móvil. Explora la aldea de Lianhua, cruza el bosque de bambú y reclama el filo celestial." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23090e1a'/%3E%3Cpath d='M16 5l2.2 8.4L26 16l-7.8 2.6L16 27l-2.2-8.4L6 16l7.8-2.6z' fill='%23f2c66d'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="game" aria-label="Mundo de La Espada Celestial"></canvas>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header id="hud" class="hidden" aria-live="polite">
+      <div class="hud-card">
+        <div class="sigil" aria-hidden="true">剣</div>
+        <div class="hud-bars">
+          <div class="hud-line"><strong id="hud-name">Lian</strong><span id="hud-level">Nv. 1</span></div>
+          <div class="meter hp"><span id="hp-fill"></span><em id="hp-text">64 / 64</em></div>
+          <div class="meter qi"><span id="qi-fill"></span><em id="qi-text">30 / 30</em></div>
+        </div>
+      </div>
+      <div class="quest-chip">
+        <span class="quest-label">Objetivo</span>
+        <span id="quest-text">Habla con la Anciana Mei en la plaza</span>
+      </div>
+    </header>
+
+    <div id="hint" class="hidden"><kbd>E</kbd> hablar</div>
+    <div id="zone-banner" aria-live="polite"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+
+    <div id="touch" class="hidden">
+      <div class="dpad" aria-label="Controles de movimiento">
+        <button type="button" data-dir="up" aria-label="Arriba">▲</button>
+        <button type="button" data-dir="left" aria-label="Izquierda">◀</button>
+        <button type="button" data-dir="right" aria-label="Derecha">▶</button>
+        <button type="button" data-dir="down" aria-label="Abajo">▼</button>
+      </div>
+      <div class="touch-actions">
+        <button type="button" id="btn-menu" class="round-btn small" aria-label="Abrir menú">☰</button>
+        <button type="button" id="btn-action" class="round-btn" aria-label="Interactuar">✦</button>
+      </div>
+    </div>
+
+    <div id="dialogue" class="hidden" role="dialog" aria-live="polite" aria-label="Diálogo">
+      <div class="dlg-head"><span id="dlg-speaker">Anciana Mei</span><span class="dlg-mark" aria-hidden="true">◈</span></div>
+      <p id="dlg-text"></p>
+      <button type="button" id="dlg-next" class="dlg-next">Continuar <span aria-hidden="true">▸</span></button>
+    </div>
+
+    <section id="combat" class="hidden" aria-label="Combate por turnos">
+      <div class="enemy-card">
+        <div class="enemy-head">
+          <span id="enemy-name">Espíritu de Bambú</span>
+          <span id="enemy-tag" class="tag">Criatura</span>
+        </div>
+        <div class="meter enemy"><span id="enemy-fill"></span></div>
+        <div id="enemy-hint" class="enemy-hint">Acecha entre los bambúes</div>
+      </div>
+      <div id="combat-log" class="combat-log" role="status" aria-live="polite">Elige tu acción.</div>
+      <div id="combat-actions" class="combat-actions"></div>
+    </section>
+
+    <div id="screen-title" class="screen">
+      <div class="title-copy">
+        <p class="kicker">Un RPG de artes marciales</p>
+        <h1><span>La Espada</span><span class="gold">Celestial</span></h1>
+        <p class="tagline">El filo que duerme en el templo lleva cien años esperando a alguien digno. Lianhua necesita que ese alguien seas tú.</p>
+        <div class="title-actions">
+          <button type="button" id="btn-new" class="btn primary">Nueva partida</button>
+          <button type="button" id="btn-continue" class="btn" disabled>Continuar</button>
+          <button type="button" id="btn-help" class="btn ghost">Cómo jugar</button>
+        </div>
+        <p class="title-meta">Exploración · Combate por turnos · Guardado local</p>
+      </div>
+    </div>
+
+    <div id="screen-help" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <div class="panel-box">
+        <div class="panel-head">
+          <h2 id="help-title">Cómo jugar</h2>
+          <button type="button" id="help-close" class="icon-btn" aria-label="Cerrar ayuda">✕</button>
+        </div>
+        <p class="muted">La Espada Celestial es un RPG corto de exploración y combate por turnos. Habla con la gente de Lianhua, cruza el bosque y llega al templo del norte.</p>
+        <h3>Controles</h3>
+        <ul class="controls-list">
+          <li><strong>Mover:</strong> WASD o flechas. En móvil, cruceta en pantalla.</li>
+          <li><strong>Hablar / examinar:</strong> E, Espacio o Enter. En móvil, botón ✦.</li>
+          <li><strong>Menú:</strong> Esc o M. En móvil, botón ☰.</li>
+          <li><strong>Combate:</strong> elige una técnica con el ratón, el dedo o las teclas 1-9.</li>
+        </ul>
+        <h3>Combate</h3>
+        <p class="muted">Cada turno eliges una técnica. El qi se recupera con Respiración y Guardia. Si tu vida llega a cero, vuelves al último guardado.</p>
+        <h3>Guardado</h3>
+        <p class="muted">La partida se guarda automáticamente al avanzar la historia, al ganar combates y al descansar en el menú. Todo se queda en este navegador.</p>
+      </div>
+    </div>
+
+    <div id="screen-menu" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="menu-title">
+      <div class="panel-box">
+        <div class="panel-head">
+          <h2 id="menu-title">Pausa</h2>
+          <button type="button" id="menu-close" class="icon-btn" aria-label="Cerrar menú">✕</button>
+        </div>
+        <div id="menu-stats" class="menu-stats"></div>
+        <h3>Mochila</h3>
+        <ul id="menu-items" class="item-list"></ul>
+        <h3>Misión</h3>
+        <p id="menu-quest" class="muted"></p>
+        <div class="menu-actions">
+          <button type="button" id="menu-save">Guardar</button>
+          <button type="button" id="menu-sound">Sonido: sí</button>
+          <button type="button" id="menu-title">Volver al título</button>
+        </div>
+        <p class="muted small" style="margin-top:14px">Controles: WASD / flechas · E interactuar · Esc menú</p>
+      </div>
+    </div>
+
+    <div id="screen-ending" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="ending-title">
+      <div class="panel-box ending-box">
+        <p class="kicker">Final del primer arco</p>
+        <h2 id="ending-title">El filo ha vuelto a cantar</h2>
+        <p class="ending-copy">La Espada Celestial brilla en tu mano y el cielo de Lianhua se aclara por primera vez en cien años. Mei sonríe desde la plaza: el camino apenas comienza.</p>
+        <div id="ending-stats" class="ending-stats"></div>
+        <div class="ending-actions">
+          <button type="button" id="ending-continue" class="btn primary">Seguir explorando</button>
+          <button type="button" id="ending-new" class="btn ghost">Nueva partida</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-gameover" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="gameover-title">
+      <div class="panel-box ending-box">
+        <p class="kicker">La noche te alcanzó</p>
+        <h2 id="gameover-title">Has caído</h2>
+        <p class="ending-copy">El bosque guarda silencio. Pero Lianhua aún te espera: vuelve al último guardado y respira antes de cortar.</p>
+        <div class="ending-actions">
+          <button type="button" id="gameover-retry" class="btn primary">Volver al último guardado</button>
+          <button type="button" id="gameover-title" class="btn ghost">Título</button>
+        </div>
+      </div>
+    </div>
+
+    <noscript>
+      <div class="overlay" style="display:grid">
+        <div class="panel-box">
+          <h2>Se necesita JavaScript</h2>
+          <p class="muted">La Espada Celestial se dibuja en tiempo real en el navegador. Activa JavaScript para jugar.</p>
+        </div>
+      </div>
+    </noscript>
+  </div>
+  <script type="module" src="./js/game.js"></script>
+</body>
+</html>

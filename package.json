@@ -1,0 +1,11 @@
+{
+  "name": "la-espada-celestial",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "La Espada Celestial: RPG de artes marciales para navegador y movil.",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node server.mjs"
+  }
+}
