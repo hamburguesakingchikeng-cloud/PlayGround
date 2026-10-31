@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#07070d">
+<title>Street Clash — Neon Rooftop Duel</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307070d'/%3E%3Cpath d='M8 23 14 9h5l6 14h-5l-1-3h-6l-1 3H8Zm7-7h3l-1.5-4L15 16Z' fill='%23ffd166'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <div id="frame">
+    <canvas id="game" width="1280" height="720" aria-label="Street Clash fighting arena"></canvas>
+
+    <div id="hud" class="hud hidden" aria-hidden="true">
+      <div class="side left">
+        <div class="name-row"><span class="tag">P1</span><span class="name">KAI</span><span class="wins" id="p1wins"><i></i><i></i></span></div>
+        <div class="health"><div class="ghost" id="p1ghost"></div><div class="fill" id="p1health"></div></div>
+        <div class="sp-wrap"><div class="sp" id="p1sp"><span></span><span></span><span></span><span></span><b id="p1spfill"></b></div><em>SP</em></div>
+      </div>
+      <div class="center">
+        <div class="timer" id="timer">60</div>
+        <div class="round-label" id="roundLabel">ROUND 1</div>
+      </div>
+      <div class="side right">
+        <div class="name-row"><span class="wins" id="p2wins"><i></i><i></i></span><span class="name">RAZE</span><span class="tag cpu">CPU</span></div>
+        <div class="health"><div class="ghost" id="p2ghost"></div><div class="fill" id="p2health"></div></div>
+        <div class="sp-wrap"><em>SP</em><div class="sp" id="p2sp"><span></span><span></span><span></span><span></span><b id="p2spfill"></b></div></div>
+      </div>
+    </div>
+
+    <div id="combo" class="combo"><strong id="comboNum">2</strong><em>HIT COMBO</em></div>
+
+    <div class="corner-buttons">
+      <button id="muteBtn" class="icon-btn" aria-label="Toggle sound" title="Sound (M)">♪</button>
+      <button id="pauseBtn" class="icon-btn" aria-label="Pause" title="Pause (P)">❚❚</button>
+    </div>
+
+    <div id="titleOverlay" class="overlay title-overlay">
+      <div class="title-panel">
+        <p class="eyebrow">NEON DISTRICT PRESENTS</p>
+        <h1 class="logo">STREET<br><span>CLASH</span></h1>
+        <p class="tagline">A 2D rooftop duel &middot; best of three</p>
+        <div class="vs-row"><span>KAI</span><b>VS</b><span>RAZE</span></div>
+        <button id="startBtn" class="btn primary">START</button>
+        <div class="keys">
+          <div><b>A D</b> Move</div><div><b>W</b> Jump</div><div><b>S</b> Block</div>
+          <div><b>J</b> Punch</div><div><b>K</b> Kick</div><div><b>1 2 3</b> Specials</div>
+        </div>
+        <p class="motion-hint"><b>HADOKEN</b> ↓↘→ + J &nbsp;·&nbsp; <b>SHORYUKEN</b> →↓↘ + J &nbsp;·&nbsp; <b>TATSUMAKI</b> ↓↙← + K</p>
+        <p class="mobile-hint">Touch controls appear on phones &amp; tablets. Rotate for a bigger arena.</p>
+      </div>
+    </div>
+
+    <div id="matchOverlay" class="overlay hidden">
+      <div class="match-card">
+        <p class="eyebrow">MATCH COMPLETE</p>
+        <h2 id="winnerText">KAI WINS</h2>
+        <p class="score" id="matchScore">2 — 0</p>
+        <div class="stats">
+          <div><span>Rounds</span><b id="statRounds">2 — 0</b></div>
+          <div><span>Best combo</span><b id="statCombo">0 hits</b></div>
+          <div><span>Specials landed</span><b id="statSpecials">0</b></div>
+        </div>
+        <div class="btn-row">
+          <button id="rematchBtn" class="btn primary">REMATCH</button>
+          <button id="menuBtn" class="btn ghost">MAIN MENU</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="pauseOverlay" class="overlay hidden">
+      <div class="pause-card">
+        <p class="eyebrow">PAUSED</p>
+        <h2>TAKE A BREATH</h2>
+        <div class="btn-row">
+          <button id="resumeBtn" class="btn primary">RESUME</button>
+          <button id="restartBtn" class="btn ghost">RESTART</button>
+          <button id="quitBtn" class="btn ghost">MENU</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="touch" class="touch hidden" aria-hidden="true">
+      <div class="dpad">
+        <button class="tbtn move" data-hold="left" aria-label="Move left">◀</button>
+        <button class="tbtn move" data-hold="right" aria-label="Move right">▶</button>
+        <button class="tbtn jump" data-tap="jump" aria-label="Jump">JUMP</button>
+        <button class="tbtn block" data-hold="block" aria-label="Block">BLOCK</button>
+      </div>
+      <div class="actions">
+        <div class="basic">
+          <button class="tbtn atk" data-tap="punch" aria-label="Punch"><b>J</b><span>PUNCH</span></button>
+          <button class="tbtn atk" data-tap="kick" aria-label="Kick"><b>K</b><span>KICK</span></button>
+        </div>
+        <div class="specials">
+          <button class="tbtn sp" data-special="fireball" aria-label="Hadoken, 25 SP"><i>波</i><span>HADOKEN</span></button>
+          <button class="tbtn sp" data-special="uppercut" aria-label="Shoryuken, 25 SP"><i>昇</i><span>SHORYU</span></button>
+          <button class="tbtn sp" data-special="spin" aria-label="Tatsumaki, 25 SP"><i>旋</i><span>TATSU</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+  </div>
+
+  <div id="portraitInfo" class="portrait-info hidden" aria-hidden="true">
+    <p class="pi-title">MOVE LIST <span>25 SP EACH</span></p>
+    <div class="pi-row"><i>波</i><div><b>HADOKEN</b><span>↓↘→ + J &middot; fireball</span></div></div>
+    <div class="pi-row"><i>昇</i><div><b>SHORYUKEN</b><span>→↓↘ + J &middot; rising uppercut</span></div></div>
+    <div class="pi-row"><i>旋</i><div><b>TATSUMAKI</b><span>↓↙← + K &middot; spinning kicks</span></div></div>
+    <p class="pi-rotate">↻ Rotate for the full arena</p>
+  </div>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
