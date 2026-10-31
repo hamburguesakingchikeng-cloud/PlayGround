@@ -1,0 +1,29 @@
+{
+  "name": "La Espada Celestial",
+  "short_name": "Espada Celestial",
+  "description": "RPG de acción de fantasía épica en español. Explora Valdoria, Drakmor y Kansordore, vincula criaturas y decide el destino del Velo.",
+  "lang": "es-ES",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "landscape",
+  "background_color": "#05070c",
+  "theme_color": "#0a0d15",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

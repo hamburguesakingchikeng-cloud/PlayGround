@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="La Espada Celestial">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="72%">
+      <stop offset="0" stop-color="#1b2b47"/>
+      <stop offset="0.55" stop-color="#0a1220"/>
+      <stop offset="1" stop-color="#04060b"/>
+    </radialGradient>
+    <linearGradient id="blade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#d9f4ff"/>
+      <stop offset="1" stop-color="#8fc4e8"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe9b0"/>
+      <stop offset="0.5" stop-color="#d9b46a"/>
+      <stop offset="1" stop-color="#8f6a32"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="9" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <circle cx="256" cy="244" r="168" fill="none" stroke="#d9b46a" stroke-opacity="0.22" stroke-width="2"/>
+  <circle cx="256" cy="244" r="146" fill="none" stroke="#d9b46a" stroke-opacity="0.12" stroke-width="1"/>
+  <g filter="url(#glow)">
+    <path d="M256 66 L282 132 L276 326 L256 366 L236 326 L230 132 Z" fill="url(#blade)"/>
+    <path d="M256 78 L256 352" stroke="#ffffff" stroke-opacity="0.85" stroke-width="3"/>
+    <path d="M162 338 L350 338 L338 364 L174 364 Z" fill="url(#gold)"/>
+    <rect x="244" y="362" width="24" height="74" rx="10" fill="url(#gold)"/>
+    <circle cx="256" cy="446" r="16" fill="url(#gold)"/>
+    <circle cx="256" cy="446" r="7" fill="#8fe6ff"/>
+  </g>
+  <g fill="#d9b46a" opacity="0.9">
+    <path d="M256 30 L262 46 L278 52 L262 58 L256 74 L250 58 L234 52 L250 46 Z"/>
+    <path d="M402 214 L406 224 L416 228 L406 232 L402 242 L398 232 L388 228 L398 224 Z"/>
+    <path d="M110 214 L114 224 L124 228 L114 232 L110 242 L106 232 L96 228 L106 224 Z"/>
+  </g>
+</svg>
