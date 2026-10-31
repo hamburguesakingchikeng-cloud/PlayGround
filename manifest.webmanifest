@@ -1,0 +1,17 @@
+{
+  "name": "La Espada Celestial",
+  "short_name": "Espada Celestial",
+  "description": "RPG de aventura y combate por turnos: tres fragmentos, tres custodios y un eclipse que no termina.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080b16",
+  "theme_color": "#080b16",
+  "categories": ["games", "role-playing"],
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

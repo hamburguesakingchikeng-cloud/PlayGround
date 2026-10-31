@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#080b16">
+<meta name="description" content="LA ESPADA CELESTIAL: RPG de aventura y combate por turnos. Fragmentos, jefes, misiones y guardado. Jugable en Android, iOS y escritorio.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>La Espada Celestial</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="game" width="960" height="540" aria-label="La Espada Celestial, RPG por turnos. Usa las flechas o el panel táctil para moverte."></canvas>
+  <div id="boot">
+    <div class="boot-sword">&#9876;</div>
+    <h1>LA ESPADA CELESTIAL</h1>
+    <p id="boot-msg">Forjando el mundo&hellip;</p>
+  </div>
+</div>
+<noscript><p class="noscript">Este juego necesita JavaScript activado.</p></noscript>
+<script src="js/util.js"></script>
+<script src="js/input.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/art.js"></script>
+<script src="js/data.js"></script>
+<script src="js/maps.js"></script>
+<script src="js/story.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/world.js"></script>
+<script src="js/battle.js"></script>
+<script src="js/game.js"></script>
+<script>
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    });
+  }
+</script>
+</body>
+</html>
