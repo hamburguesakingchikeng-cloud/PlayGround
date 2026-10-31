@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#0a0d13" />
+<title>La Espada Celestial — RPG de acción</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="app">
+  <canvas id="game" aria-label="Mundo de La Espada Celestial"></canvas>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div class="hud-left">
+      <div class="level-pill"><span class="lv-label">Nv</span><span id="lvl">1</span></div>
+      <div class="bars">
+        <div class="bar hp"><div class="fill" id="hpFill"></div><span id="hpText">100 / 100</span></div>
+        <div class="bar mp"><div class="fill" id="mpFill"></div><span id="mpText">50 / 50</span></div>
+        <div class="bar xp"><div class="fill" id="xpFill"></div></div>
+      </div>
+    </div>
+    <div class="hud-right">
+      <div class="gold"><span class="coin">◈</span><span id="goldText">0</span></div>
+      <div class="zone" id="zoneText">Aldea Luz de Luna</div>
+      <button id="menuBtn" class="icon-btn" aria-label="Menú">☰</button>
+    </div>
+    <div id="questTracker">
+      <div class="q-kicker">Misión</div>
+      <div id="questName">—</div>
+      <div id="questDesc"></div>
+      <div id="questDist" class="q-dist"></div>
+    </div>
+  </div>
+
+  <div id="bossbar" class="hidden">
+    <div id="bossName">Señor de la Ceniza</div>
+    <div class="bbar"><div id="bossFill"></div></div>
+  </div>
+
+  <div id="prompt" class="hidden"></div>
+  <div id="toasts"></div>
+
+  <!-- Controles táctiles -->
+  <div id="touch">
+    <div id="stickZone"><div id="stickBase"><div id="stickKnob"></div></div></div>
+    <div id="buttons">
+      <button class="act heal" data-act="heal" aria-label="Curar">✚<span>Curar</span></button>
+      <button class="act potion" data-act="potion" aria-label="Poción">⚗<span id="potionCount">3</span></button>
+      <button class="act skill" data-act="skill" aria-label="Golpe Celestial">✦<span>Celestial</span></button>
+      <button class="act attack" data-act="attack" aria-label="Atacar">⚔<span>Atacar</span></button>
+    </div>
+    <button id="interactBtn" class="hidden">Hablar</button>
+  </div>
+
+  <!-- Diálogo -->
+  <div id="dialog" class="hidden">
+    <div class="dlg">
+      <div class="who" id="dlgWho">Anciana Mira</div>
+      <p id="dlgText"></p>
+      <div class="dlg-actions" id="dlgActions"></div>
+    </div>
+  </div>
+
+  <!-- Panel de personaje -->
+  <div id="panel" class="overlay hidden">
+    <div class="sheet">
+      <header>
+        <h2 id="panelTitle">Personaje</h2>
+        <button class="close" id="panelClose" aria-label="Cerrar">✕</button>
+      </header>
+      <nav class="tabs">
+        <button data-tab="char" class="active">Personaje</button>
+        <button data-tab="inv">Inventario</button>
+        <button data-tab="quests">Misiones</button>
+        <button data-tab="sys">Sistema</button>
+      </nav>
+      <div class="tab-body">
+        <section id="tab-char" class="tab"></section>
+        <section id="tab-inv" class="tab hidden"></section>
+        <section id="tab-quests" class="tab hidden"></section>
+        <section id="tab-sys" class="tab hidden"></section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Muerte -->
+  <div id="death" class="overlay hidden">
+    <div class="card death-card">
+      <h2>Has caído</h2>
+      <p>La ceniza te reclama… pero la espada aún no ha terminado contigo.</p>
+      <button id="btnRetry" class="primary">Levantarse</button>
+    </div>
+  </div>
+
+  <!-- Título -->
+  <div id="title" class="overlay title-screen">
+    <div class="title-wrap">
+      <div class="kicker">Un RPG de acción</div>
+      <h1>LA ESPADA<br /><span>CELESTIAL</span></h1>
+      <p class="tag">La ceniza devora el reino. Solo la hoja que duerme en tu sangre puede detenerla.</p>
+      <div class="title-btns">
+        <button id="btnNew" class="primary">Nueva partida</button>
+        <button id="btnContinue">Continuar</button>
+      </div>
+      <div class="controls-note">
+        <strong>Teclado</strong> · WASD mover · J atacar · K celestial · L curar · E hablar · I inventario<br />
+        <strong>Móvil</strong> · joystick izquierdo · botones derechos · toca «Hablar» junto a los NPC
+      </div>
+    </div>
+    <div class="title-glow"></div>
+  </div>
+
+  <!-- Final -->
+  <div id="ending" class="overlay hidden">
+    <div class="card ending-card">
+      <div class="kicker">Epílogo</div>
+      <h2>LA CENIZA SE APAGA</h2>
+      <p id="endingText"></p>
+      <div id="endingStats" class="ending-stats"></div>
+      <button id="btnAgain" class="primary">Jugar de nuevo</button>
+    </div>
+  </div>
+
+  <div id="fader"></div>
+</div>
+<script src="data.js"></script>
+<script src="engine.js"></script>
+<script src="render.js"></script>
+<script src="ui.js"></script>
+</body>
+</html>
