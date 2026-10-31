@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#07080c" />
+<meta name="description" content="Grimhoard — a Vampire Survivors-style run with Diablo-style loot. Survive six minutes, build a monster, and hoard the dead." />
+<title>GRIMHOARD — Survive. Loot. Repeat.</title>
+<link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+<div id="app">
+  <canvas id="game" aria-label="Grimhoard arena"></canvas>
+
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="hud-left panel">
+        <div class="level-row">
+          <div class="level-badge" id="levelBadge">1</div>
+          <div class="bars">
+            <div class="bar hp"><i id="hpFill"></i><span id="hpText">100 / 100</span></div>
+            <div class="bar xp"><i id="xpFill"></i><span id="xpText">0 / 5 XP</span></div>
+          </div>
+        </div>
+        <div class="hud-stats">
+          <span id="statDps">DPS 8</span>
+          <span id="statArmor">ARMOR 0</span>
+          <span id="statCrit">CRIT 5%</span>
+        </div>
+      </div>
+
+      <div class="hud-center">
+        <div class="timer" id="timer">00:00</div>
+        <div class="wave-label" id="waveLabel">The graveyard stirs</div>
+        <div class="boss-bar hidden" id="bossBar">
+          <div class="boss-name"><span>BONE TYRANT</span><b id="bossHpText">100%</b></div>
+          <div class="boss-track"><i id="bossFill"></i></div>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <div class="currency panel">
+          <span class="coin" aria-hidden="true"></span><b id="goldText">0</b>
+          <span class="skull" aria-hidden="true"></span><b id="killsText">0</b>
+        </div>
+        <div class="hud-buttons">
+          <button id="inventoryBtn" class="icon-btn" aria-label="Open satchel" title="Satchel (I)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1.2 11H3.8L5 8Z"/><path d="M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8"/><path d="M9 12.5h6"/></svg>
+          </button>
+          <button id="muteBtn" class="icon-btn" aria-label="Toggle sound" title="Sound">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4V9Z"/><path class="mute-wave" d="M16 8.5c1.6 1.7 1.6 5.3 0 7"/><path class="mute-wave" d="M18.5 6c3 3.2 3 8.8 0 12"/><path class="mute-slash" d="M16 8l5 8M21 8l-5 8"/></svg>
+          </button>
+          <button id="pauseBtn" class="icon-btn" aria-label="Pause" title="Pause (Esc)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="equip-dock" id="equipDock" aria-label="Equipped items"></div>
+
+    <div class="hint" id="hint"><span class="hint-desktop">WASD / arrows to move · Your weapon attacks automatically · Walk over loot</span><span class="hint-mobile">Drag to move · Walk over loot · Attacks are automatic</span></div>
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+
+    <div class="joystick" id="joystick" aria-hidden="true">
+      <div class="stick-base"><div class="stick-knob" id="stickKnob"></div></div>
+    </div>
+  </div>
+
+  <section id="menu" class="screen">
+    <div class="menu-vignette"></div>
+    <div class="menu-inner">
+      <div class="eyebrow">A survivor's run through the damned</div>
+      <h1 class="logo"><span>GRIM</span>HOARD</h1>
+      <div class="logo-rule"><i></i><b>✦</b><i></i></div>
+      <p class="tagline">Survive the night. Loot the dead. Become the terror.</p>
+      <button id="startBtn" class="btn primary big">Start Run</button>
+      <div class="menu-controls">
+        <span><kbd>WASD</kbd> move</span>
+        <span><kbd>I</kbd> satchel</span>
+        <span><kbd>Esc</kbd> pause</span>
+      </div>
+      <div class="menu-touch">Drag anywhere to move · Your weapon attacks on its own</div>
+      <div class="menu-features">
+        <div><b>Auto-attack</b><span>Your weapon hunts on its own</span></div>
+        <div><b>Diablo loot</b><span>Rarities, affixes, uniques</span></div>
+        <div><b>Six minutes</b><span>Outbuild the Bone Tyrant</span></div>
+      </div>
+      <div class="best hidden" id="bestRun"></div>
+    </div>
+    <div class="menu-footer">Walk over gear to hoard it · Open your satchel to equip and compare</div>
+  </section>
+
+  <section id="levelup" class="overlay hidden">
+    <div class="overlay-panel levelup-panel">
+      <div class="eyebrow">The dead grant you power</div>
+      <h2>LEVEL <span id="levelupLevel">2</span></h2>
+      <p class="overlay-sub">Choose a boon. The night grows hungrier.</p>
+      <div class="cards" id="boonCards"></div>
+      <div class="levelup-foot">
+        <span class="gold-inline"><i class="coin"></i> <b id="levelupGold">0</b></span>
+        <button id="rerollBtn" class="btn small">Reroll · <span id="rerollCost">25</span>g</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="inventory" class="overlay hidden">
+    <div class="overlay-panel inventory-panel">
+      <header class="panel-head">
+        <div>
+          <div class="eyebrow">Relics of the fallen</div>
+          <h2>SATCHEL</h2>
+        </div>
+        <button id="closeInventory" class="close-btn" aria-label="Close satchel">✕</button>
+      </header>
+      <div class="inv-body">
+        <aside class="paperdoll">
+          <div class="equip-grid" id="paperdollSlots"></div>
+          <div class="stat-list" id="statList"></div>
+        </aside>
+        <section class="bag">
+          <div class="bag-head"><span>LOOT</span><span id="bagCount">0 / 24</span></div>
+          <div class="bag-grid" id="bagGrid"></div>
+          <div class="bag-actions">
+            <button id="salvageCommons" class="btn small ghost">Salvage Commons</button>
+            <button id="gambleBtn" class="btn small">Gamble · <span id="gambleCost">120</span>g</button>
+          </div>
+        </section>
+      </div>
+      <div class="inv-hint">Click to equip · Right-click to salvage · Hover for details</div>
+    </div>
+  </section>
+
+  <section id="legendary" class="overlay hidden">
+    <div class="overlay-panel legendary-panel">
+      <div class="legendary-rays" aria-hidden="true"></div>
+      <div class="eyebrow">A legend falls from the dark</div>
+      <h2 class="legendary-title">LEGENDARY</h2>
+      <div id="legendaryCard" class="legendary-card"></div>
+      <div class="legendary-actions">
+        <button id="legendaryEquip" class="btn primary">Equip</button>
+        <button id="legendaryKeep" class="btn">Take</button>
+        <button id="legendarySalvage" class="btn ghost">Salvage · <span id="legendaryGold">0</span>g</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="pause" class="overlay hidden">
+    <div class="overlay-panel pause-panel">
+      <div class="eyebrow">The dark waits</div>
+      <h2>PAUSED</h2>
+      <div class="pause-actions">
+        <button id="resumeBtn" class="btn primary">Resume</button>
+        <button id="pauseInventoryBtn" class="btn">Satchel</button>
+        <button id="restartBtn" class="btn ghost">Restart Run</button>
+      </div>
+      <div class="pause-controls">
+        <span><kbd>WASD</kbd> move</span>
+        <span><kbd>I</kbd> satchel</span>
+        <span><kbd>Esc</kbd> resume</span>
+      </div>
+      <p class="pause-tip">Your weapon attacks automatically. Walk over gear to pick it up.</p>
+    </div>
+  </section>
+
+  <section id="end" class="overlay hidden">
+    <div class="overlay-panel end-panel">
+      <div class="eyebrow" id="endEyebrow">The graveyard claims another</div>
+      <h2 id="endTitle">YOU DIED</h2>
+      <p class="overlay-sub" id="endSub">The hoard passes to the next fool.</p>
+      <div class="end-stats" id="endStats"></div>
+      <div class="end-actions">
+        <button id="againBtn" class="btn primary">Run Again</button>
+        <button id="menuBtn" class="btn ghost">Main Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="tooltip" class="tooltip hidden" role="tooltip"></div>
+</div>
+<script type="module" src="./js/main.js"></script>
+</body>
+</html>
