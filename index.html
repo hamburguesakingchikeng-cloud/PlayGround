@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#070a12" />
+  <meta name="description" content="La Espada Celestial: un RPG de acción de fantasía épica. Explora Valdoria, Drakmor y Kansordore, forja vínculos con criaturas y decide el destino del Velo." />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>La Espada Celestial · RPG de fantasía épica</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="./fonts/cinzel.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./fonts/cormorant.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="game" aria-label="Mundo de La Espada Celestial"></canvas>
+    <div id="vignette" aria-hidden="true"></div>
+    <div id="grain" aria-hidden="true"></div>
+    <div id="portrait-lock" class="hidden" role="dialog" aria-label="Rota el dispositivo">
+      <div class="portrait-card">
+        <div class="rotate-icon">▭</div>
+        <h2>Gira tu dispositivo</h2>
+        <p>La Espada Celestial se juega en horizontal para que puedas ver todo el mundo.</p>
+      </div>
+    </div>
+    <div id="boot" class="boot-screen">
+      <div class="boot-mark">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 6l7 27 18-8-12 22 24 3-24 9 17 18-26-9-4 28-4-28-26 9 17-18-24-9 24-3-12-22 18 8z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="50" cy="50" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      </div>
+      <h1>La Espada Celestial</h1>
+      <div class="boot-sub">El Velo se está rompiendo</div>
+      <div class="boot-bar"><span id="boot-progress"></span></div>
+      <div id="boot-status">Invocando la primera luz…</div>
+    </div>
+    <div id="hud" class="hidden" aria-live="polite"></div>
+    <div id="ui" aria-live="polite"></div>
+    <div id="toast-layer" aria-live="assertive"></div>
+    <div id="cinematic" class="hidden">
+      <div class="bar bar-top"></div>
+      <div class="bar bar-bottom"></div>
+      <div id="subtitle"></div>
+      <button id="skip-cinematic" class="ghost-btn">Saltar ▸</button>
+    </div>
+    <div id="fade" class="fade"></div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
