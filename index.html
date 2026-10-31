@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#06070f">
+  <meta name="description" content="Split/Break — a neon breakout where every impact fractures the ball.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2305060d'/%3E%3Cg transform='skewX(-17)'%3E%3Crect x='7' y='13' width='5' height='12' rx='1' fill='%2364f5ff' opacity='.6'/%3E%3Crect x='14' y='8' width='5' height='17' rx='1' fill='%2364f5ff'/%3E%3Crect x='21' y='4' width='5' height='21' rx='1' fill='%23ff48ae'/%3E%3C/g%3E%3C/svg%3E">
+  <title>SPLIT/BREAK — every hit multiplies</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app" aria-label="Split Break arcade game">
+    <canvas id="game" aria-label="Breakout playfield"></canvas>
+
+    <div class="ambient ambient-a" aria-hidden="true"></div>
+    <div class="ambient ambient-b" aria-hidden="true"></div>
+    <div class="damage-flash" id="damage-flash" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Split Break home" id="brand">
+        <span class="brand-glyph" aria-hidden="true">
+          <i></i><i></i><i></i>
+        </span>
+        <span class="brand-word">SPLIT<span class="brand-slash">/</span>BREAK</span>
+      </a>
+
+      <div class="telemetry" aria-live="polite">
+        <div class="stat stat-score">
+          <span class="stat-label">SCORE</span>
+          <strong id="score">000000</strong>
+        </div>
+        <div class="stat stat-level">
+          <span class="stat-label">SECTOR</span>
+          <strong id="level">01</strong>
+        </div>
+        <div class="stat stat-swarm">
+          <span class="stat-label">SWARM</span>
+          <strong><span class="swarm-dot"></span><span id="balls">1</span><em>/14</em></strong>
+          <span class="swarm-track"><i id="swarm-fill"></i></span>
+        </div>
+        <div class="stat stat-cores">
+          <span class="stat-label">CORES</span>
+          <strong id="cores"><i class="core-pip"></i><i class="core-pip"></i><i class="core-pip"></i></strong>
+        </div>
+      </div>
+
+      <div class="utilities">
+        <button class="icon-btn" id="pause-btn" type="button" aria-label="Pause" title="Pause (P)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6v12M16 6v12"/></svg>
+        </button>
+        <button class="icon-btn" id="sound-btn" type="button" aria-label="Mute sound" title="Mute sound">
+          <svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zM16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+          <svg class="sound-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zM17 9l4 6M21 9l-4 6"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="combo" id="combo" aria-hidden="true">
+      <span>CHAIN</span><strong>×1</strong>
+    </div>
+
+    <div class="announcer" id="announcer" aria-live="polite"></div>
+
+    <div class="edge edge-left" aria-hidden="true"></div>
+    <div class="edge edge-right" aria-hidden="true"></div>
+
+    <footer class="bottombar">
+      <div class="control-hint" id="control-hint">
+        <span class="keyboard-hint"><kbd>SPACE</kbd><span>launch</span></span>
+        <span class="hint-divider"></span>
+        <span class="mouse-hint">move to steer</span>
+        <span class="touch-hint">tap to launch · drag to steer</span>
+      </div>
+      <div class="split-readout">
+        <span class="split-pulse" aria-hidden="true"></span>
+        <span>EVERY IMPACT SPLITS</span>
+        <span class="split-cap">MAX 14</span>
+      </div>
+    </footer>
+
+    <section class="overlay intro-overlay" id="intro" aria-labelledby="intro-title">
+      <div class="intro-orbit" aria-hidden="true">
+        <span class="orbit orbit-a"></span>
+        <span class="orbit orbit-b"></span>
+        <span class="orbit orbit-c"></span>
+      </div>
+      <p class="eyebrow"><span>ARCADE EXPERIMENT</span><i></i><span>SECTOR 01</span></p>
+      <h1 id="intro-title">SPLIT<span>/</span>BREAK</h1>
+      <p class="tagline">Every impact fractures the ball.<br><strong>Keep the swarm alive.</strong></p>
+      <div class="intro-actions">
+        <button class="primary-btn" id="play-btn" type="button">
+          <span>Play</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7V5z"/></svg>
+        </button>
+        <div class="best-score">
+          <span>PERSONAL BEST</span>
+          <strong id="best-intro">000000</strong>
+        </div>
+      </div>
+      <div class="intro-keys">
+        <div><span class="key-icon">↔</span><b>STEER</b><em>mouse · touch · arrows</em></div>
+        <div><span class="key-icon">◉</span><b>SPLIT</b><em>hit bricks &amp; paddle</em></div>
+        <div><span class="key-icon">✦</span><b>CHAIN</b><em>keep the run alive</em></div>
+      </div>
+      <p class="intro-footnote">NO DOWNLOADS · SYNTH AUDIO · ONE MORE RUN</p>
+    </section>
+
+    <section class="overlay pause-overlay" id="pause" aria-labelledby="pause-title" hidden>
+      <p class="eyebrow"><span>RUN SUSPENDED</span><i></i><span>PAUSED</span></p>
+      <h2 id="pause-title">HOLD<br><span>POSITION</span></h2>
+      <p class="pause-copy">The swarm is waiting.</p>
+      <div class="pause-actions">
+        <button class="primary-btn" id="resume-btn" type="button"><span>Resume</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7V5z"/></svg></button>
+        <button class="ghost-btn" id="restart-btn" type="button">Restart run</button>
+      </div>
+      <p class="shortcut-line"><kbd>P</kbd> or <kbd>ESC</kbd> to resume</p>
+    </section>
+
+    <section class="overlay gameover-overlay" id="gameover" aria-labelledby="gameover-title" hidden>
+      <p class="eyebrow"><span>SIGNAL LOST</span><i></i><span>RUN COMPLETE</span></p>
+      <h2 id="gameover-title">SWARM<br><span>COLLAPSED</span></h2>
+      <div class="result-grid">
+        <div><span>FINAL SCORE</span><strong id="final-score">000000</strong></div>
+        <div><span>BEST SCORE</span><strong id="best-score">000000</strong></div>
+        <div><span>SECTOR</span><strong id="final-level">01</strong></div>
+      </div>
+      <p class="result-note" id="result-note">The wall held. This time.</p>
+      <div class="pause-actions">
+        <button class="primary-btn" id="again-btn" type="button"><span>Play Again</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7V5z"/></svg></button>
+        <button class="ghost-btn" id="menu-btn" type="button">Back to title</button>
+      </div>
+    </section>
+
+    <div class="level-banner" id="level-banner" aria-live="polite">
+      <span>SECTOR CLEAR</span>
+      <strong>WALL FRACTURED</strong>
+      <em>+1,000 BONUS</em>
+    </div>
+
+    <div class="toast" id="toast" aria-live="polite"></div>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
