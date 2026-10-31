@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0b0d18" />
+  <meta name="description" content="La Espada Celestial — un RPG de acción de fantasía épica. Explora Valdoria, Drakmor y Kansordore, forja tu leyenda y resuena con criaturas legendarias." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d18'/%3E%3Cpath d='M16 5l3 8 7 1-5 6 2 8-7-4-7 4 2-8-5-6 7-1z' fill='%23e6bd6d'/%3E%3C/svg%3E" />
+  <title>La Espada Celestial</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="game" aria-label="Mundo de La Espada Celestial"></canvas>
+    <div id="fx-layer" aria-hidden="true"></div>
+
+    <!-- ===================== HUD ===================== -->
+    <div id="hud" class="hud hidden" aria-live="off">
+      <div class="hud-top">
+        <div class="vitals glass">
+          <div class="portrait-wrap">
+            <canvas id="hud-portrait" width="96" height="96"></canvas>
+            <div class="level-badge"><span id="hud-level">1</span></div>
+          </div>
+          <div class="vitals-bars">
+            <div class="char-line"><span id="hud-name">Aurel</span><span id="hud-region" class="region-tag">VALDORIA</span></div>
+            <div class="bar hp"><div class="bar-fill" id="bar-hp"></div><span class="bar-label" id="hp-text">100 / 100</span></div>
+            <div class="bar mp"><div class="bar-fill" id="bar-mp"></div><span class="bar-label" id="mp-text">60 / 60</span></div>
+            <div class="bar sp"><div class="bar-fill" id="bar-sp"></div><span class="bar-label" id="sp-text">100</span></div>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <div class="gold-chip glass" id="hud-gold">◈ 60</div>
+          <button class="icon-btn" id="btn-journal" aria-label="Diario de misiones" title="Diario (Tab)">
+            <svg viewBox="0 0 24 24"><path d="M5 3h12a2 2 0 0 1 2 2v16H7a2 2 0 0 1-2-2V3zm3 3v10M8 6h7M8 9h5"/></svg>
+          </button>
+          <button class="icon-btn" id="btn-menu" aria-label="Menú" title="Menú (Esc)">
+            <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+        </div>
+
+        <div class="minimap glass">
+          <canvas id="minimap" width="180" height="180"></canvas>
+          <div class="minimap-ring"></div>
+          <div class="compass">N</div>
+          <div class="minimap-label" id="minimap-label">Aldea de Lumen</div>
+        </div>
+      </div>
+
+      <div class="quest-tracker glass" id="quest-tracker">
+        <div class="quest-kicker" id="quest-kicker">MISIÓN PRINCIPAL</div>
+        <div class="quest-name" id="quest-title">El primer latido</div>
+        <div class="quest-objective" id="quest-objective">Despierta junto al santuario</div>
+      </div>
+
+      <div class="boss-bar hidden" id="boss-bar">
+        <div class="boss-name" id="boss-name">GUARDIÁN ESPECTRAL</div>
+        <div class="boss-sub" id="boss-sub">Guardián del Bosque de Lumen</div>
+        <div class="bar boss"><div class="bar-fill" id="bar-boss"></div><div class="boss-lag" id="bar-boss-lag"></div></div>
+      </div>
+
+      <div class="ability-bar" id="ability-bar">
+        <button class="ability guard" data-action="block" aria-label="Guardia"><div class="ability-key">Q</div><div class="ability-icon ico-shield"></div><span>Guardia</span><div class="cooldown" id="cd-block"></div></button>
+        <button class="ability" data-action="attack" aria-label="Atacar"><div class="ability-key">J</div><div class="ability-icon ico-sword"></div><span>Filo</span><div class="cooldown" id="cd-attack"></div></button>
+        <button class="ability" data-action="ability1" aria-label="Filo Celestial"><div class="ability-key">K</div><div class="ability-icon ico-wave"></div><span>Filo Celestial</span><div class="cooldown" id="cd-ability1"></div></button>
+        <button class="ability" data-action="ability2" aria-label="Pulso de Resonancia"><div class="ability-key">L</div><div class="ability-icon ico-pulse"></div><span>Resonancia</span><div class="cooldown" id="cd-ability2"></div></button>
+        <button class="ability" data-action="ability3" aria-label="Paso del Velo"><div class="ability-key">U</div><div class="ability-icon ico-step"></div><span>Paso del Velo</span><div class="cooldown" id="cd-ability3"></div></button>
+        <button class="ability companion-ability" data-action="companion" aria-label="Invocar criatura"><div class="ability-key">O</div><div class="ability-icon" id="companion-icon"></div><span id="companion-name">Sin criatura</span><div class="cooldown" id="cd-companion"></div></button>
+      </div>
+
+      <div class="creature-party glass" id="creature-party">
+        <canvas id="party-icon" width="64" height="64"></canvas>
+        <div class="party-text"><span id="party-name">SIN VÍNCULO</span><div class="party-hp"><i id="party-hp-fill"></i></div></div>
+      </div>
+
+      <div class="interaction hidden" id="interaction"><kbd>E</kbd><span id="interaction-text">Hablar</span></div>
+      <div class="resonate-prompt hidden" id="resonate-prompt"><kbd>R</kbd><span>Resonar con la criatura</span></div>
+
+      <div class="toast-stack" id="toast-stack"></div>
+      <div class="zone-banner hidden" id="zone-banner">
+        <div class="zone-line"></div>
+        <div class="zone-name" id="zone-name">VALDORIA</div>
+        <div class="zone-sub" id="zone-sub">Reino de los Prados de Lumen</div>
+        <div class="zone-line"></div>
+      </div>
+
+      <div class="touch-controls hidden" id="touch-controls">
+        <div class="joystick" id="joystick"><div class="stick" id="stick"></div></div>
+        <div class="touch-actions">
+          <button class="tbtn small" data-action="interact" aria-label="Interactuar">E</button>
+          <button class="tbtn small" data-action="resonate" aria-label="Resonar">R</button>
+          <button class="tbtn dodge" data-action="dodge" aria-label="Esquivar">DODGE</button>
+          <button class="tbtn small guard" data-action="block" aria-label="Guardia">GUARDIA</button>
+          <button class="tbtn attack" data-action="attack" aria-label="Atacar">ATK</button>
+          <button class="tbtn small skill" data-action="ability1" aria-label="Filo Celestial">K</button>
+          <button class="tbtn small skill" data-action="ability2" aria-label="Pulso">L</button>
+          <button class="tbtn small skill" data-action="ability3" aria-label="Paso del Velo">U</button>
+          <button class="tbtn small skill" data-action="companion" aria-label="Criatura">O</button>
+        </div>
+      </div>
+
+      <div class="desktop-hints">
+        <span><kbd>WASD</kbd> Moverse</span><span><kbd>J</kbd> Atacar</span><span><kbd>Q</kbd> Guardia</span><span><kbd>Espacio</kbd> Esquivar</span><span><kbd>E</kbd> Interactuar</span><span><kbd>R</kbd> Resonar</span><span><kbd>Tab</kbd> Diario</span>
+      </div>
+    </div>
+
+    <!-- ===================== TITLE ===================== -->
+    <div id="title-screen" class="screen title-screen">
+      <div class="title-vignette"></div>
+      <div class="title-embers" aria-hidden="true"></div>
+      <div class="title-content">
+        <div class="title-overline">UNA LEYENDA DEL VELO Y LA PRIMERA BRASA</div>
+        <h1 class="game-logo">
+          <span class="logo-small">LA ESPADA</span>
+          <span class="logo-big">CELESTIAL</span>
+          <span class="logo-rule"><i></i>✦<i></i></span>
+        </h1>
+        <p class="title-tagline">El mundo canta. Tú eres la nota que no estaba escrita.</p>
+        <div class="title-menu">
+          <button class="btn-primary" id="btn-continue">CONTINUAR LEYENDA</button>
+          <button class="btn-ghost" id="btn-new">NUEVA PARTIDA</button>
+          <button class="btn-ghost" id="btn-title-settings">AJUSTES</button>
+        </div>
+        <div class="title-foot">
+          <span>RPG DE ACCIÓN · FANTASÍA ÉPICA</span>
+          <span class="title-credit">Una aventura original de IA Game Lab</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== CREATION ===================== -->
+    <div id="creation-screen" class="screen creation-screen hidden">
+      <div class="creation-wrap">
+        <header class="creation-head">
+          <div>
+            <div class="eyebrow">FORJA TU LEYENDA</div>
+            <h2>El que no estaba escrito</h2>
+          </div>
+          <div class="creation-step" id="creation-step-label">01 · APARIENCIA</div>
+        </header>
+        <div class="creation-body">
+          <div class="creation-preview">
+            <canvas id="creation-canvas" width="420" height="480"></canvas>
+            <div class="preview-plinth"></div>
+            <div class="preview-caption">PORTADOR DE LA RESONANCIA</div>
+          </div>
+          <div class="creation-options">
+            <div class="creation-tabs">
+              <button class="ctab active" data-ctab="look">Aspecto</button>
+              <button class="ctab" data-ctab="stats">Atributos</button>
+              <button class="ctab" data-ctab="gear">Equipo</button>
+            </div>
+            <div class="ctab-panel" id="ctab-look">
+              <label class="field">Nombre
+                <input id="input-name" maxlength="16" value="Aurel" autocomplete="off" spellcheck="false" />
+              </label>
+              <div class="opt-row"><span>Rostro</span><div class="opt-buttons" data-opt="face">
+                <button data-value="0" class="sel">Sereno</button><button data-value="1">Marcado</button><button data-value="2">Joven</button>
+              </div></div>
+              <div class="opt-row"><span>Pelo</span><div class="opt-buttons" data-opt="hair">
+                <button data-value="0" class="sel">Largo</button><button data-value="1">Corto</button><button data-value="2">Trenza</button><button data-value="3">Rapado</button>
+              </div></div>
+              <div class="opt-row"><span>Color de pelo</span><div class="swatches" data-opt="hairColor">
+                <button data-value="#e8d9b8" class="sel" style="--c:#e8d9b8"></button>
+                <button data-value="#c98a4b" style="--c:#c98a4b"></button>
+                <button data-value="#2b2733" style="--c:#2b2733"></button>
+                <button data-value="#d9e4ef" style="--c:#d9e4ef"></button>
+                <button data-value="#9d5c8f" style="--c:#9d5c8f"></button>
+              </div></div>
+              <div class="opt-row"><span>Ropa</span><div class="opt-buttons" data-opt="outfit">
+                <button data-value="0" class="sel">Errante</button><button data-value="1">Guardia</button><button data-value="2">Erudito</button>
+              </div></div>
+              <div class="opt-row"><span>Armadura</span><div class="opt-buttons" data-opt="armorLook">
+                <button data-value="0" class="sel">Cuero</button><button data-value="1">Acero</button><button data-value="2">Celeste</button>
+              </div></div>
+              <div class="opt-row"><span>Accesorio</span><div class="opt-buttons" data-opt="accessory">
+                <button data-value="0" class="sel">Ninguno</button><button data-value="1">Capa</button><button data-value="2">Bufanda</button><button data-value="3">Casco</button>
+              </div></div>
+            </div>
+            <div class="ctab-panel hidden" id="ctab-stats">
+              <p class="panel-copy">Reparte <strong>8 puntos</strong> entre tus atributos. Cada punto cambia de forma medible tu combate.</p>
+              <div class="stat-alloc-list" id="stat-alloc-list"></div>
+              <div class="stat-points">Puntos restantes: <strong id="points-left">8</strong></div>
+            </div>
+            <div class="ctab-panel hidden" id="ctab-gear">
+              <p class="panel-copy">Tu elección inicial define tu estilo de combate. Podrás encontrar y comprar equipo más poderoso.</p>
+              <div class="gear-cards" id="gear-cards"></div>
+              <div class="signature-preview" id="signature-preview"></div>
+            </div>
+          </div>
+        </div>
+        <footer class="creation-foot">
+          <button class="btn-ghost" id="btn-creation-back">VOLVER</button>
+          <div class="creation-dots"><i class="active"></i><i></i><i></i></div>
+          <button class="btn-primary" id="btn-begin">COMENZAR LA TRAVESÍA</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ===================== GENERIC SCREEN ===================== -->
+    <div id="overlay" class="screen hidden">
+      <div class="overlay-panel">
+        <header class="overlay-head">
+          <div><div class="eyebrow" id="overlay-eyebrow">DIARIO</div><h2 id="overlay-title">Misiones</h2></div>
+          <button class="close-btn" id="overlay-close" aria-label="Cerrar">✕</button>
+        </header>
+        <div class="overlay-tabs" id="overlay-tabs"></div>
+        <div class="overlay-body" id="overlay-body"></div>
+        <footer class="overlay-foot" id="overlay-foot"></footer>
+      </div>
+    </div>
+
+    <!-- ===================== DIALOGUE ===================== -->
+    <div id="dialogue" class="dialogue hidden">
+      <div class="dialogue-box glass">
+        <canvas id="dialogue-portrait" width="160" height="160"></canvas>
+        <div class="dialogue-main">
+          <div class="dialogue-name" id="dialogue-name">NARA</div>
+          <div class="dialogue-role" id="dialogue-role">Archivista de Lumen</div>
+          <p class="dialogue-text" id="dialogue-text"></p>
+          <div class="dialogue-choices" id="dialogue-choices"></div>
+          <div class="dialogue-next" id="dialogue-next">CONTINUAR <span>▸</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== RESONANCE ===================== -->
+    <div id="resonance" class="screen resonance-screen hidden">
+      <div class="resonance-panel">
+        <div class="resonance-kicker">VÍNCULO DE RESONANCIA</div>
+        <h2 id="res-name">LOBITO DE CENIZA</h2>
+        <div class="resonance-ring-wrap">
+          <canvas id="resonance-canvas" width="420" height="420"></canvas>
+          <div class="resonance-center">✦</div>
+        </div>
+        <p class="resonance-copy" id="res-copy">Sincroniza tu pulso con el de la criatura. Pulsa <kbd>ESPACIO</kbd> cuando la marca cruce la zona dorada.</p>
+        <div class="resonance-meter"><div id="res-fill"></div></div>
+        <button class="btn-primary" id="res-strike">SINTONIZAR</button>
+      </div>
+    </div>
+
+    <!-- ===================== CUTSCENE ===================== -->
+    <div id="cutscene" class="screen cutscene hidden">
+      <div class="cutscene-bg" id="cutscene-bg"></div>
+      <div class="cutscene-content">
+        <div class="cutscene-chapter" id="cutscene-chapter">CAPÍTULO I</div>
+        <h2 id="cutscene-title">El Despertar</h2>
+        <div class="cutscene-rule"><i></i>✦<i></i></div>
+        <p id="cutscene-text"></p>
+        <button class="btn-ghost" id="cutscene-skip">CONTINUAR ▸</button>
+      </div>
+    </div>
+
+    <!-- ===================== ROTATE ===================== -->
+    <div id="rotate" class="rotate hidden">
+      <div class="rotate-glyph">⟳</div>
+      <p>Gira tu dispositivo</p>
+      <span>La Espada Celestial se juega en horizontal.</span>
+    </div>
+
+    <div id="boot" class="boot">
+      <div class="boot-mark">✦</div>
+      <div class="boot-title">LA ESPADA CELESTIAL</div>
+      <div class="boot-sub">AFINANDO EL VELO…</div>
+      <div class="boot-line"><i></i></div>
+    </div>
+
+    <div id="fatal" class="fatal hidden"></div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
